@@ -1,11 +1,54 @@
 ## Homework in course from YLab
 
-### conda for python 3.10
-```css
-conda install --file conda-requirements.txt
+Tested:
+* on **Manjaro Linux**: conda package manager, python 3.10.12
+* on **WSL2 Ubuntu**: pip package manager, Python 3.10.6
+* on **Windows 11**: pip package manager, Python 3.11.3
+
+### Clone repository:
+```commandline
+git clone https://github.com/suntrackspb/fastapi-menu.git
 ```
-or
-```css
-pip install pip-requirements.txt
+
+```shell
+# Create PostgreSQL database instance
+docker run -itd \
+	--name fastapi-menu-db \
+	-e POSTGRES_PASSWORD=postgres \
+	-p 5432:5432 \
+	-v /data:/var/lib/postgresql/data \
+	postgres
 ```
-### but pip not tested
+or use your PostgreSQL Server, but you need change auth data in .env file
+```shell
+cd fastapi-menu
+```
+```shell
+#Linux: 
+python3 -m venv venv
+
+#Windows PowerShell:
+python -m venv venv
+```
+```shell
+#Linux: 
+source venv/bin/activate
+
+#Windows PowerShell:
+.\venv\Scripts\Activate.ps1
+```
+```shell
+#Linux: 
+pip install -r pip-requirements.txt
+
+#Windows PowerShell:
+.\venv\Scripts\python.exe -m pip install -r pip-requirements.txt
+```
+```shell
+#Linux: 
+python3 run.py
+
+#Windows PowerShell:
+python run.py
+```
+Open http://localhost:8000/docs/
