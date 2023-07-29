@@ -1,8 +1,11 @@
 ## Homework in course from YLab
 
 ![](https://img.shields.io/badge/python-3.10-blue?style=flat-square)
-![](https://img.shields.io/badge/fastapi-0.89.1-critical?style=flat-square)
+![](https://img.shields.io/badge/fastapi-0.100.0-red?style=flat-square)
+![](https://img.shields.io/badge/SQLAlchemy-1.4.39-red?style=flat-square)
+![](https://img.shields.io/badge/asyncpg-0.28.0-red?style=flat-square)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
 
 Tested:
 * on **Manjaro Linux**: conda package manager, python 3.10.12
