@@ -14,10 +14,6 @@ async def on_startup():
     await db_init()
 
 
-# app.include_router(menu_router)
-# app.include_router(submenu_router)
-# app.include_router(dish_router)
-
 app.include_router(
     menu_router,
     prefix='/api/v1',
