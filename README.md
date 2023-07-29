@@ -5,7 +5,19 @@ Tested:
 * on **WSL2 Ubuntu**: pip package manager, Python 3.10.6
 * on **Windows 11**: pip package manager, Python 3.11.3
 
-### Clone repository:
+## Run on Docker:
+```commandline
+git clone https://github.com/suntrackspb/fastapi-menu.git
+```
+```shell
+cd fastapi-menu
+```
+```shell
+docker-compose up
+```
+
+
+## Run on local:
 ```commandline
 git clone https://github.com/suntrackspb/fastapi-menu.git
 ```
@@ -23,6 +35,7 @@ or use your PostgreSQL Server, but you need change auth data in .env file
 ```shell
 cd fastapi-menu
 ```
+Edit .env file, set: `DB_HOST=localhost`
 ```shell
 #Linux: 
 python3 -m venv venv

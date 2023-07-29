@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  db:
+    container_name: fastapi_project_postgres
+    image: postgres:15.1-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+    networks:
+      - fastapi_project_network
+  api:
+    container_name: fastapi_project_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    entrypoint: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - api_data:/app/files
+    networks:
+      - fastapi_project_network
+    restart: always
+
+volumes:
+  postgres_data:
+  api_data:
+
+networks:
+  fastapi_project_network:
+    name: "fastapi_project_network"
