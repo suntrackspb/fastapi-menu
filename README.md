@@ -1,5 +1,9 @@
 ## Homework in course from YLab
 
+![](https://img.shields.io/badge/python-3.10-blue?style=flat-square)
+![](https://img.shields.io/badge/fastapi-0.89.1-critical?style=flat-square)
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
 Tested:
 * on **Manjaro Linux**: conda package manager, python 3.10.12
 * on **WSL2 Ubuntu**: pip package manager, Python 3.10.6
