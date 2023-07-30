@@ -59,10 +59,10 @@ source venv/bin/activate
 ```
 ```shell
 #Linux: 
-pip install -r pip-requirements.txt
+pip install -r requirements.txt
 
 #Windows PowerShell:
-.\venv\Scripts\python.exe -m pip install -r pip-requirements.txt
+.\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 ```shell
 #Linux: 
