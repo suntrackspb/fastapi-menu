@@ -4,11 +4,16 @@ services:
     container_name: fastapi_test_postgres
     image: postgres:15.1-alpine
     env_file:
-      - .test.env
+      - .env
     ports:
       - "6543:5432"
     environment:
       POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "${DB_USER_TEST}", "-d", "${DB_NAME_TEST}" ]
+      interval: 5s
+      timeout: 30s
+      retries: 3
     networks:
       - fastapi_project_network
 
@@ -18,11 +23,13 @@ services:
       context: .
       dockerfile: Dockerfile
     env_file:
-      - .test.env
+      - .env
     entrypoint: >
-      sh -c "pytest -a"
+      sh -c "pytest"
     ports:
       - "8000:8000"
+    environment:
+      MODE: "TEST"
     networks:
       - fastapi_project_network
 

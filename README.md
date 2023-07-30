@@ -6,28 +6,43 @@
 ![](https://img.shields.io/badge/asyncpg-0.28.0-red?style=flat-square)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
-
-Tested:
-* on **Manjaro Linux**: conda package manager, python 3.10.12
-* on **WSL2 Ubuntu**: pip package manager, Python 3.10.6
-* on **Windows 11**: pip package manager, Python 3.11.3
-
-## Run on Docker:
+## Installation:
 ```commandline
 git clone https://github.com/suntrackspb/fastapi-menu.git
 ```
 ```shell
 cd fastapi-menu
 ```
+
+
+## Run on Docker:
 ```shell
-docker-compose up
+#Start
+docker-compose up -d
+```
+Open http://localhost:8000/docs/
+```shell
+#Stop & delete
+docker-compose down --remove-orphans
 ```
 
+## Run Tests on Docker:
+```shell
+docker-compose -f docker-compose-test.yaml up -d
+
+docker start -a fastapi_test_app
+```
+```shell
+#Stop & delete
+docker-compose down --remove-orphans
+```
 
 ## Run on local:
-```commandline
-git clone https://github.com/suntrackspb/fastapi-menu.git
-```
+
+Tested:
+* on **Manjaro Linux**: conda package manager, python 3.10.12
+* on **WSL2 Ubuntu**: pip package manager, Python 3.10.6
+* on **Windows 11**: pip package manager, Python 3.11.3
 
 ```shell
 # Create PostgreSQL database instance
@@ -39,10 +54,10 @@ docker run -itd \
 	postgres
 ```
 or use your PostgreSQL Server, but you need change auth data in .env file
-```shell
-cd fastapi-menu
-```
+
+```text
 Edit .env file, set: `DB_HOST=localhost`
+```
 ```shell
 #Linux: 
 python3 -m venv venv
@@ -70,5 +85,8 @@ python3 run.py
 
 #Windows PowerShell:
 python run.py
+
+#Run Tests
+pytest
 ```
 Open http://localhost:8000/docs/
