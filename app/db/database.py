@@ -5,7 +5,7 @@ from app.models import models
 
 DATABASE_URL: str = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-engine = create_async_engine(DATABASE_URL, future=True, echo=True)
+engine = create_async_engine(DATABASE_URL, future=True, echo=False)
 
 Session_local_async = sessionmaker(
     bind=engine,
@@ -16,6 +16,7 @@ Session_local_async = sessionmaker(
 
 async def db_init() -> None:
     async with engine.begin() as conn:
+        await conn.run_sync(models.Base.metadata.drop_all)
         await conn.run_sync(models.Base.metadata.create_all)
 
 

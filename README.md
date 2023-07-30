@@ -35,7 +35,7 @@ docker run -itd \
 	--name fastapi-menu-db \
 	-e POSTGRES_PASSWORD=postgres \
 	-p 5432:5432 \
-	-v /data:/var/lib/postgresql/data \
+	-v /dist:/var/lib/postgresql/dist \
 	postgres
 ```
 or use your PostgreSQL Server, but you need change auth data in .env file
