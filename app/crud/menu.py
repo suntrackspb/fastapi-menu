@@ -26,10 +26,9 @@ class MenuCrud:
         return db_menu
 
     async def get_list(self):
-        db_menus = (
+        return (
             await self.db.execute(select(Menu))
         ).scalars().fetchall()
-        return db_menus
 
     async def create(self, menu: MenuCreate):
         new_menu = Menu(title=menu.title, description=menu.description)

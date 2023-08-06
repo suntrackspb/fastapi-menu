@@ -26,10 +26,9 @@ class DishCrud:
         return db_dish
 
     async def get_list(self):
-        db_dishes = (
+        return (
             await self.db.execute(select(Dish))
         ).scalars().fetchall()
-        return db_dishes
 
     async def create(self, submenu_id: str, dish: DishCreate):
         db_dish = Dish(

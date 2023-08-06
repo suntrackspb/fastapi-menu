@@ -12,7 +12,7 @@ async def test_get_all_menus(ac: AsyncClient):
 async def test_post_menu(ac: AsyncClient):
     response_post = await ac.post("/api/v1/menus", json={
         "title": "My menu 1",
-        "description": "My menu description 1"
+        "description": "My menu description 1",
     })
     response_data = response_post.json()
     Menu.id, Menu.title, Menu.description \
@@ -44,7 +44,7 @@ async def test_get_exact_menu_after_post(ac: AsyncClient):
 async def test_update_menu(ac: AsyncClient):
     response_patch_menu = await ac.patch(f"/api/v1/menus/{Menu.id}", json={
         "title": "My updated menu 1",
-        "description": "My updated menu description 1"
+        "description": "My updated menu description 1",
     })
     assert response_patch_menu.status_code == 200
 

@@ -1,2 +1,2 @@
-from .menu import *
 from .errors import *
+from .menu import *

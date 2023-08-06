@@ -9,10 +9,10 @@ router = APIRouter()
 
 
 @router.get(
-    '/submenus',
+    "/submenus",
     response_model=list[SubmenuGet],
-    summary='Получить список подменю',
-    response_description='Список всех подменю',
+    summary="Получить список подменю",
+    response_description="Список всех подменю",
 )
 async def read_submenus(
     menu_id: str,
@@ -25,11 +25,11 @@ async def read_submenus(
 
 
 @router.get(
-    '/submenus/{submenu_id}',
-    responses={404: {'model': Message404}},
+    "/submenus/{submenu_id}",
+    responses={404: {"model": Message404}},
     response_model=SubmenuGet,
-    summary='Получить детальную информацию о подменю',
-    response_description='Детальная информация о подменю',
+    summary="Получить детальную информацию o подменю",
+    response_description="Детальная информация o подменю",
 )
 async def read_submenu(
     submenu_id: str,
@@ -37,25 +37,25 @@ async def read_submenu(
         get_submenu_service,
     ),
 ):
-    """Получить детальную информацию о подменю"""
+    """Получить детальную информацию o подменю"""
     return await submenu_service.get_submenu(
         submenu_id=submenu_id,
     )
 
 
 @router.post(
-    '/submenus',
+    "/submenus",
     response_model=SubmenuGet,
-    summary='Создать подменю',
-    response_description='Созданное подменю',
+    summary="Создать подменю",
+    response_description="Созданное подменю",
     status_code=201,
 )
 async def create_submenu(
     menu_id: str,
     submenu: SubmenuCreate = Body(
         example={
-            'title': 'Submenu 1',
-            'description': 'Submenu 1 description',
+            "title": "Submenu 1",
+            "description": "Submenu 1 description",
         },
     ),
     submenu_service: SubmenuService = Depends(
@@ -70,18 +70,18 @@ async def create_submenu(
 
 
 @router.patch(
-    '/submenus/{submenu_id}',
-    responses={404: {'model': Message404}},
+    "/submenus/{submenu_id}",
+    responses={404: {"model": Message404}},
     response_model=SubmenuGet,
-    summary='Обновить подменю',
-    response_description='Обновленное подменю',
+    summary="Обновить подменю",
+    response_description="Обновленное подменю",
 )
 async def update_submenu(
     submenu_id: str,
     submenu: SubmenuUpdate = Body(
         example={
-            'title': 'Submenu 1 updated',
-            'description': 'Submenu 1 description updated',
+            "title": "Submenu 1 updated",
+            "description": "Submenu 1 description updated",
         },
     ),
     submenu_service: SubmenuService = Depends(
@@ -96,9 +96,9 @@ async def update_submenu(
 
 
 @router.delete(
-    '/submenus/{submenu_id}',
-    responses={404: {'model': Message404}, 200: {'model': MessageDeleted}},
-    summary='Удалить подменю',
+    "/submenus/{submenu_id}",
+    responses={404: {"model": Message404}, 200: {"model": MessageDeleted}},
+    summary="Удалить подменю",
 )
 async def delete_submenu(
     menu_id: str,

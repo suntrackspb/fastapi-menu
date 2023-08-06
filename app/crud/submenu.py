@@ -26,7 +26,7 @@ class SubmenuCrud:
         return db_submenu
 
     async def get_list(self, menu_id: str):
-        db_submenus = (
+        return (
             (
                 await self.db.execute(
                     select(Submenu).where(Submenu.menu_id == menu_id),
@@ -35,7 +35,6 @@ class SubmenuCrud:
             .scalars()
             .fetchall()
         )
-        return db_submenus
 
     async def create(self, menu_id: str, submenu: SubmenuCreate):
         new_submenu = Submenu(

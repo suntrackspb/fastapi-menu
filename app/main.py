@@ -7,11 +7,11 @@ from app.routes.menu import router as menu_router
 from app.routes.submenu import router as submenu_router
 
 app = FastAPI(
-    title='Online Menu API'
+    title="Online Menu API",
 )
 
 
-@app.on_event('startup')
+@app.on_event("startup")
 async def on_startup() -> None:
     await db_init()
     await cache_init()
@@ -19,16 +19,16 @@ async def on_startup() -> None:
 
 app.include_router(
     menu_router,
-    prefix='/api/v1',
-    tags=['menus'],
+    prefix="/api/v1",
+    tags=["menus"],
 )
 app.include_router(
     submenu_router,
-    prefix='/api/v1/menus/{menu_id}',
-    tags=['submenus'],
+    prefix="/api/v1/menus/{menu_id}",
+    tags=["submenus"],
 )
 app.include_router(
     dish_router,
-    prefix='/api/v1/menus/{menu_id}/submenus/{submenu_id}',
-    tags=['dishes'],
+    prefix="/api/v1/menus/{menu_id}/submenus/{submenu_id}",
+    tags=["dishes"],
 )

@@ -1,3 +1,5 @@
+from typing import Annotated, Any
+
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
@@ -12,20 +14,20 @@ from app.services.menu_service import MenuService
 from app.services.submenu_service import SubmenuService
 
 
-def get_cache(cache=Depends(get_redis)):
+def get_cache(cache: Annotated[Any, Depends(get_redis)]):
     return CacheService(cache)
 
 
 ###
 # MENU
 ###
-def get_menu_crud(db: Session = Depends(get_db)):
+def get_menu_crud(db: Annotated[Session, Depends(get_db)]):
     return MenuCrud(db)
 
 
 def get_menu_service(
-        crud: MenuCrud = Depends(get_menu_crud),
-        cache: CacheService = Depends(get_cache),
+        crud:  Annotated[MenuCrud, Depends(get_menu_crud)],
+        cache:  Annotated[CacheService, Depends(get_cache)],
 ):
     return MenuService(crud, cache)
 
@@ -33,13 +35,13 @@ def get_menu_service(
 ###
 # SUBMENU
 ###
-def get_submenu_crud(db: Session = Depends(get_db)):
+def get_submenu_crud(db:  Annotated[Session, Depends(get_db)]):
     return SubmenuCrud(db)
 
 
 def get_submenu_service(
-    crud: SubmenuCrud = Depends(get_submenu_crud),
-    cache: CacheService = Depends(get_cache),
+    crud:  Annotated[SubmenuCrud, Depends(get_submenu_crud)],
+    cache:  Annotated[CacheService, Depends(get_cache)],
 ):
     return SubmenuService(crud, cache)
 
@@ -47,12 +49,12 @@ def get_submenu_service(
 ###
 # DISHES
 ###
-async def get_dish_crud(db: Session = Depends(get_db)):
+async def get_dish_crud(db:  Annotated[Session, Depends(get_db)]):
     return DishCrud(db)
 
 
 async def get_dish_service(
-    crud: DishCrud = Depends(get_dish_crud),
-    cache: CacheService = Depends(get_cache),
+    crud:  Annotated[DishCrud, Depends(get_dish_crud)],
+    cache:  Annotated[CacheService, Depends(get_cache)],
 ):
     return DishService(crud, cache=cache)
