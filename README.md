@@ -4,6 +4,7 @@
 ![](https://img.shields.io/badge/fastapi-0.100.0-red?style=flat-square)
 ![](https://img.shields.io/badge/SQLAlchemy-1.4.39-red?style=flat-square)
 ![](https://img.shields.io/badge/asyncpg-0.28.0-red?style=flat-square)
+![](https://img.shields.io/badge/aioredis-2.0.1-red?style=flat-square)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 ## Installation:
