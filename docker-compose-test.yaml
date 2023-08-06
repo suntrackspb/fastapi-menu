@@ -15,7 +15,7 @@ services:
       timeout: 30s
       retries: 3
     networks:
-      - fastapi_project_network
+      - fastapi_test_network
 
   test-api:
     container_name: fastapi_test_app
@@ -31,8 +31,23 @@ services:
     environment:
       MODE: "TEST"
     networks:
-      - fastapi_project_network
+      - fastapi_test_network
+
+  cache:
+    container_name: fastapi_test_cache
+    image: redis:latest
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    networks:
+      - fastapi_test_network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
 
 networks:
   fastapi_project_network:
-    name: "fastapi_project_network"
+    name: "fastapi_test_network"

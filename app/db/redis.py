@@ -12,3 +12,8 @@ async def get_cache() -> Redis:
         decode_responses=True,
     )
     return redis
+
+
+async def cache_init() -> None:
+    r = await get_cache()
+    await r.flushall()

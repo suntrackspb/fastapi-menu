@@ -14,7 +14,7 @@ services:
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
       interval: 5s
-      timeout: 30s
+      timeout: 10s
       retries: 3
     networks:
       - fastapi_project_network
@@ -37,6 +37,21 @@ services:
     networks:
       - fastapi_project_network
     restart: always
+
+  cache:
+    container_name: fastapi_project_cache
+    image: redis:latest
+    env_file:
+      - .env
+    ports:
+      - "6379:6379"
+    networks:
+      - fastapi_project_network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 10s
+      retries: 3
 
 volumes:
   postgres_data:
