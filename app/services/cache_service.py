@@ -2,6 +2,8 @@ import json
 
 from fastapi.encoders import jsonable_encoder
 
+from app.config import REDIS_EXPIRE
+
 
 class CacheService:
     def __init__(self, cache):
@@ -12,7 +14,9 @@ class CacheService:
         for value in data:
             value.pop('_sa_instance_state', None)
         data = json.dumps(jsonable_encoder(data))
-        return await self.cache.set(list_name, data)
+        set_cache = await self.cache.set(list_name, data)
+        await self.cache.expire(list_name, REDIS_EXPIRE)
+        return set_cache
 
     async def get(self, name):
         value = await self.cache.get(name)
@@ -20,7 +24,9 @@ class CacheService:
 
     async def set(self, name, value):
         value = jsonable_encoder(value)
-        return await self.cache.set(name, json.dumps(value))
+        set_cache = await self.cache.set(name, json.dumps(value))
+        await self.cache.expire(name, REDIS_EXPIRE)
+        return set_cache
 
     async def delete(self, name):
         return await self.cache.delete(name)

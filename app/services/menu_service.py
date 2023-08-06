@@ -16,7 +16,7 @@ class MenuService:
             db_menus = cached_data
         else:
             db_menus = await self.crud.get_list()
-            cached_data = await self.cache.set_all('menu_list', db_menus)
+            await self.cache.set_all('menu_list', db_menus)
         return db_menus
 
     async def get_menu(self, menu_id: str):
@@ -27,7 +27,7 @@ class MenuService:
             db_menu = await self.crud.get(menu_id)
             if db_menu is None:
                 raise HTTPException(status_code=404, detail='menu not found')
-            cached_data = await self.cache.set(f'menu_{menu_id}', db_menu)
+            await self.cache.set(f'menu_{menu_id}', db_menu)
         return db_menu
 
     async def create_menu(self, menu: MenuCreate):

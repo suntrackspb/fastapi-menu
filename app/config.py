@@ -21,5 +21,6 @@ POSTGRES_URL: str = f'postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_POR
 
 REDIS_HOST: str = os.getenv('REDIS_HOST', default='localhost')
 REDIS_PORT: int = int(os.getenv('REDIS_PORT', default='6379'))
+REDIS_EXPIRE: int = int(os.getenv('REDIS_CACHE_TIME', default='3600'))
 
 REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
