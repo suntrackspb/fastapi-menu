@@ -55,32 +55,34 @@ docker run -itd \
 ```
 or use your PostgreSQL Server, but you need change auth data in .env file
 
+and edit hosts, set:
 ```text
-Edit .env file, set: `DB_HOST=localhost`
+DB_HOST=localhost
+REDIS_HOST=localhost
 ```
 ```shell
-#Linux: 
+#Linux:
 python3 -m venv venv
 
 #Windows PowerShell:
 python -m venv venv
 ```
 ```shell
-#Linux: 
+#Linux:
 source venv/bin/activate
 
 #Windows PowerShell:
 .\venv\Scripts\Activate.ps1
 ```
 ```shell
-#Linux: 
+#Linux:
 pip install -r requirements.txt
 
 #Windows PowerShell:
 .\venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 ```shell
-#Linux: 
+#Linux:
 python3 run.py
 
 #Windows PowerShell:
