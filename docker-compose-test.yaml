@@ -25,7 +25,7 @@ services:
     env_file:
       - .env
     entrypoint: >
-      sh -c "pytest"
+      sh -c "pytest ."
     ports:
       - "8000:8000"
     environment:
@@ -49,5 +49,5 @@ services:
       retries: 3
 
 networks:
-  fastapi_project_network:
+  fastapi_test_network:
     name: "fastapi_test_network"
