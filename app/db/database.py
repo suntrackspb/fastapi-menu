@@ -1,11 +1,10 @@
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
-from app.config import DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
+
+from app.config import POSTGRES_URL
 from app.models import models
 
-DATABASE_URL: str = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-
-engine = create_async_engine(DATABASE_URL, future=True, echo=False)
+engine = create_async_engine(POSTGRES_URL, future=True, echo=False)
 
 Session_local_async = sessionmaker(
     bind=engine,

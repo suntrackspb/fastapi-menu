@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, Body
-from app.services.menu_service import MenuService
-from app.schemas.menu import MenuGet, MenuCreate, MenuUpdate
+from fastapi import APIRouter, Body, Depends
+
 from app.depend import get_menu_service
 from app.schemas.errors import Message404, MessageDeleted
+from app.schemas.menu import MenuCreate, MenuGet, MenuUpdate
+from app.services.menu_service import MenuService
 
 router = APIRouter()
 

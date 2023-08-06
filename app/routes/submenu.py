@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, Body
-from app.services.submenu_service import SubmenuService
-from app.schemas.submenu import SubmenuGet, SubmenuCreate, SubmenuUpdate
+from fastapi import APIRouter, Body, Depends
+
 from app.depend import get_submenu_service
 from app.schemas.errors import Message404, MessageDeleted
+from app.schemas.submenu import SubmenuCreate, SubmenuGet, SubmenuUpdate
+from app.services.submenu_service import SubmenuService
 
 router = APIRouter()
 
@@ -14,12 +15,13 @@ router = APIRouter()
     response_description='Список всех подменю',
 )
 async def read_submenus(
+    menu_id: str,
     submenu_service: SubmenuService = Depends(
         get_submenu_service,
     ),
 ):
     """Получить список всех подменю"""
-    return await submenu_service.get_submenus()
+    return await submenu_service.get_submenus(menu_id)
 
 
 @router.get(
@@ -75,7 +77,6 @@ async def create_submenu(
     response_description='Обновленное подменю',
 )
 async def update_submenu(
-    menu_id: str,
     submenu_id: str,
     submenu: SubmenuUpdate = Body(
         example={
@@ -89,7 +90,6 @@ async def update_submenu(
 ):
     """Обновить подменю"""
     return await submenu_service.update_submenu(
-        menu_id=menu_id,
         submenu_id=submenu_id,
         submenu=submenu,
     )

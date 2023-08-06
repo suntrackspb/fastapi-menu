@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Body, Depends
 
 from app.depend import get_dish_service
-from app.schemas.dish import DishGet, DishCreate, DishUpdate
-from app.services.dish_service import DishService
+from app.schemas.dish import DishCreate, DishGet, DishUpdate
 from app.schemas.errors import Message404, MessageDeleted
+from app.services.dish_service import DishService
 
 router = APIRouter()
 
@@ -72,19 +72,17 @@ async def create_dish(
     response_model=DishGet,
 )
 async def update_dish(
-        submenu_id: str,
-        dish_id: str,
-        dish: DishUpdate = Body(
-            example={
-                'title': 'Dish 1 updated',
-                'description': 'Dish 1 description updated',
-            },
-        ),
-        dish_service: DishService = Depends(get_dish_service),
+    dish_id: str,
+    dish: DishUpdate = Body(
+        example={
+            'title': 'Dish 1 updated',
+            'description': 'Dish 1 description updated',
+        },
+    ),
+    dish_service: DishService = Depends(get_dish_service),
 ):
     """Изменить блюдо"""
     return await dish_service.update_dish(
-        submenu_id=submenu_id,
         dish_id=dish_id,
         dish=dish,
     )

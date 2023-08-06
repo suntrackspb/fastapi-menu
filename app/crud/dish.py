@@ -43,7 +43,7 @@ class DishCrud:
         await self.db.refresh(db_dish)
         return db_dish
 
-    async def update(self, dish_id: str, submenu_id: str, dish: DishUpdate):
+    async def update(self, dish_id: str, dish: DishUpdate):
         db_dish = await self.db.get(Dish, dish_id)
         dish_data = dish.dict(exclude_unset=True)
         for key, value in dish_data.items():
