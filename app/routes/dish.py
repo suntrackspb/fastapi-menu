@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Body, Depends
 
 from app.depend import get_dish_service
@@ -9,28 +11,28 @@ router = APIRouter()
 
 
 @router.get(
-    "/dishes",
+    '/dishes',
     response_model=list[DishGet],
-    summary="Получить список блюд",
-    response_description="Список всех блюд",
+    summary='Получить список блюд',
+    response_description='Список всех блюд',
 )
 async def read_dishes(
-        dish_service: DishService = Depends(get_dish_service),
+        dish_service: Annotated[DishService, Depends(get_dish_service)],
 ):
     """Получить список всех блюд"""
     return await dish_service.get_dishes()
 
 
 @router.get(
-    "/dishes/{dish_id}",
+    '/dishes/{dish_id}',
     response_model=DishGet,
-    responses={404: {"model": Message404}},
-    summary="Получить детальную информацию o блюде",
-    response_description="Список всех блюд",
+    responses={404: {'model': Message404}},
+    summary='Получить детальную информацию o блюде',
+    response_description='Список всех блюд',
 )
 async def read_dish(
         dish_id: str,
-        dish_service: DishService = Depends(get_dish_service),
+        dish_service: Annotated[DishService, Depends(get_dish_service)],
 ):
     """Получить детальную информацию o блюде"""
     return await dish_service.get_dish(
@@ -39,22 +41,24 @@ async def read_dish(
 
 
 @router.post(
-    "/dishes",
+    '/dishes',
     response_model=DishGet,
-    summary="Создать блюдо",
-    response_description="Созданное блюдо",
+    summary='Создать блюдо',
+    response_description='Созданное блюдо',
     status_code=201,
 )
 async def create_dish(
         menu_id: str,
         submenu_id: str,
-        dish: DishCreate = Body(
-            example={
-                "title": "Dish 1",
-                "description": "Dish 1 description",
-            },
-        ),
-        dish_service: DishService = Depends(get_dish_service),
+        dish: Annotated[
+            DishCreate, Body(
+                example={
+                    'title': 'Dish 1',
+                    'description': 'Dish 1 description',
+                },
+            ),
+        ],
+        dish_service: Annotated[DishService, Depends(get_dish_service)],
 ):
     """Создать блюдо"""
     return await dish_service.create_dish(
@@ -65,21 +69,21 @@ async def create_dish(
 
 
 @router.patch(
-    "/dishes/{dish_id}",
-    responses={404: {"model": Message404}},
-    summary="Изменить блюдо",
-    response_description="Измененное блюдо",
+    '/dishes/{dish_id}',
+    responses={404: {'model': Message404}},
+    summary='Изменить блюдо',
+    response_description='Измененное блюдо',
     response_model=DishGet,
 )
 async def update_dish(
-    dish_id: str,
-    dish: DishUpdate = Body(
-        example={
-            "title": "Dish 1 updated",
-            "description": "Dish 1 description updated",
-        },
-    ),
-    dish_service: DishService = Depends(get_dish_service),
+        dish_id: str,
+        dish: DishUpdate = Body(
+            example={
+                'title': 'Dish 1 updated',
+                'description': 'Dish 1 description updated',
+            },
+        ),
+        dish_service: DishService = Depends(get_dish_service),
 ):
     """Изменить блюдо"""
     return await dish_service.update_dish(
@@ -89,9 +93,9 @@ async def update_dish(
 
 
 @router.delete(
-    "/dishes/{dish_id}",
-    responses={404: {"model": Message404}, 200: {"model": MessageDeleted}},
-    summary="Удалить блюдо",
+    '/dishes/{dish_id}',
+    responses={404: {'model': Message404}, 200: {'model': MessageDeleted}},
+    summary='Удалить блюдо',
 )
 async def delete_dish(
         menu_id: str,
