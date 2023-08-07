@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Body, Depends
 
 from app.depend import get_menu_service
@@ -15,7 +17,7 @@ router = APIRouter()
     response_description="Список всех меню",
 )
 async def read_menus(
-    menu_service: MenuService = Depends(get_menu_service),
+        menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Получить список всех меню"""
     return await menu_service.get_menus()
@@ -28,8 +30,8 @@ async def read_menus(
     response_description="Детальная информация o меню",
 )
 async def read_menu(
-    menu_id: str,
-    menu_service: MenuService = Depends(get_menu_service),
+        menu_id: str,
+        menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Получить детальную информацию o меню"""
     return await menu_service.get_menu(menu_id=menu_id)
@@ -42,13 +44,13 @@ async def read_menu(
     status_code=201,
 )
 async def create_menu(
-    menu: MenuCreate = Body(
-        example={
-            "title": "Menu 1",
-            "description": "Menu 1 description",
-        },
-    ),
-    menu_service: MenuService = Depends(get_menu_service),
+        menu: Annotated[MenuCreate, Body(
+            example={
+                "title": "Menu 1",
+                "description": "Menu 1 description",
+            },
+        )],
+        menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Создать меню"""
     return await menu_service.create_menu(menu=menu)
@@ -62,14 +64,14 @@ async def create_menu(
     response_description="Измененное меню",
 )
 async def update_menu(
-    menu_id: str,
-    menu: MenuUpdate = Body(
-        example={
-            "title": "Menu 1 updated",
-            "description": "Menu 1 description updated",
-        },
-    ),
-    menu_service: MenuService = Depends(get_menu_service),
+        menu_id: str,
+        menu: Annotated[MenuUpdate, Body(
+            example={
+                "title": "Menu 1 updated",
+                "description": "Menu 1 description updated",
+            },
+        )],
+        menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Изменить меню"""
     return await menu_service.update_menu(
@@ -84,8 +86,8 @@ async def update_menu(
     summary="Удалить меню",
 )
 async def delete_menu(
-    menu_id: str,
-    menu_service: MenuService = Depends(get_menu_service),
+        menu_id: str,
+        menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Удалить меню"""
     return await menu_service.delete_menu(
