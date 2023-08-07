@@ -39,6 +39,7 @@ python-dotenv==1.0.0
 PyYAML==6.0.1
 requests==2.31.0
 rich==13.4.2
+ruff==0.0.282
 sniffio==1.3.0
 SQLAlchemy==1.4.39
 starlette==0.27.0
