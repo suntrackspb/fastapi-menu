@@ -1,5 +1,4 @@
 import json
-from typing import Any
 
 from aioredis import Redis
 from fastapi.encoders import jsonable_encoder
@@ -11,12 +10,12 @@ class CacheService:
     def __init__(self, cache: Redis):
         self.cache = cache
 
-    async def set_all(self, list_name: str, data: list | Any):
+    async def set_all(self, list_name: str, data: list):
         data = [value.__dict__ for value in data]
         for value in data:
             value.pop("_sa_instance_state", None)
-        data = json.dumps(jsonable_encoder(data))
-        set_cache: str = await self.cache.set(list_name, data)
+        data_str = json.dumps(jsonable_encoder(data))
+        set_cache: str = await self.cache.set(list_name, data_str)
         await self.cache.expire(list_name, REDIS_EXPIRE)
         return set_cache
 
