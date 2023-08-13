@@ -55,6 +55,7 @@ async def create_dish(
                 example={
                     "title": "Dish 1",
                     "description": "Dish 1 description",
+                    "price": "24.30",
                 },
             ),
         ],
@@ -82,6 +83,7 @@ async def update_dish(
                 example={
                     "title": "Dish 1 updated",
                     "description": "Dish 1 description updated",
+                    "price": "124.30",
                 },
             ),
         ],
