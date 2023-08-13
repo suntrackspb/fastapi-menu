@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -10,9 +9,6 @@ elif os.getenv("MODE") == "PROD":
 else:
     load_dotenv(".env.local")
 
-excel: str = str(os.getenv("EXCEL_FILE"))
-EXCEL_FILE: Path = Path(excel)
-ADMIN_PATH: Path = EXCEL_FILE.parent
 BASE_URL: str = str(os.getenv("BASE_URL"))
 
 DB_NAME: str = os.getenv("DB_NAME", default="postgres")

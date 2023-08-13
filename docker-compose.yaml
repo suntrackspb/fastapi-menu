@@ -11,35 +11,17 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: postgres
+    networks:
+      - fastapi_project_network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
       interval: 5s
       timeout: 10s
       retries: 3
-    networks:
-      - fastapi_project_network
 
-  api:
-    container_name: fastapi_project_app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    env_file:
-      - .env
-    entrypoint: >
-      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000"
-    ports:
-      - "8000:8000"
-    environment:
-      MODE: "DEV"
-    volumes:
-      - api_data:/app/files
-    networks:
-      - fastapi_project_network
-    restart: always
 
   cache:
-    container_name: fastapi_project_cache
+    container_name: fastapi_project_redis
     image: redis:latest
     env_file:
       - .env
@@ -53,9 +35,90 @@ services:
       timeout: 10s
       retries: 3
 
+  rabbitmq:
+    container_name: fastapi_project_rabbitmq
+    image: rabbitmq:latest
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    env_file:
+      - .env
+    networks:
+      - fastapi_project_network
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test:  [ "CMD", "rabbitmqctl", "status" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+  api:
+    container_name: fastapi_project_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    entrypoint: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    environment:
+      MODE: "PROD"
+    volumes:
+      - api_data:/app/admin
+    networks:
+      - fastapi_project_network
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      cache:
+        condition: service_started
+
+  celery-worker:
+    container_name: fastapi_project_celery_worker
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    command: celery -A app.celery.tasks worker
+    networks:
+      - fastapi_project_network
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      cache:
+        condition: service_started
+      api:
+        condition: service_started
+
+  celery-beat:
+    container_name: fastapi_project_celery_beat
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    command: celery -A app.celery.tasks beat
+    networks:
+      - fastapi_project_network
+    depends_on:
+      db:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      api:
+        condition: service_started
+
 volumes:
   postgres_data:
   api_data:
+  shared_beat:
+  shared_work:
 
 networks:
   fastapi_project_network:

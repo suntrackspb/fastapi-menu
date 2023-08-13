@@ -5,7 +5,7 @@ import httpx
 import openpyxl
 import openpyxl.styles
 
-from app.config import BASE_URL, EXCEL_FILE
+from app.config import BASE_URL
 from app.crud.data import DataCrud
 
 
@@ -100,7 +100,7 @@ class DataService:
                         )
 
     async def load_to_database(self) -> dict[str, str]:
-        json_data = await self.convert_xls_to_json(EXCEL_FILE)
+        json_data = await self.convert_xls_to_json(Path("./app/admin/Menu.xlsx"))
         await self.upload_to_database(json_data)
         return {"status": "true", "message": "Import successful"}
 
