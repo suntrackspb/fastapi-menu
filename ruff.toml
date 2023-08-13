@@ -57,6 +57,7 @@ ignore = [
     "ARG001", # Unused first argument
     "PT019",  # Fixture without value is injected as parameter, use @pytest.mark.usefixtures instead
     "SIM108",  # Use ternary operator instead of if-else block (ternaries lie to coverage)
+    "F403",
 ]
 
 [per-file-ignores]
