@@ -3,16 +3,17 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-EXCEL_FILE: Path = Path(str(os.getenv("EXCEL_FILE")))
-ADMIN_PATH: Path = EXCEL_FILE.parent
-BASE_URL: str = str(os.getenv("BASE_URL"))
-
 if os.getenv("MODE") == "TEST":
     load_dotenv(".env.local")
 elif os.getenv("MODE") == "PROD":
     load_dotenv(".env")
 else:
     load_dotenv(".env.local")
+
+excel: str = str(os.getenv("EXCEL_FILE"))
+EXCEL_FILE: Path = Path(excel)
+ADMIN_PATH: Path = EXCEL_FILE.parent
+BASE_URL: str = str(os.getenv("BASE_URL"))
 
 DB_NAME: str = os.getenv("DB_NAME", default="postgres")
 DB_USER: str = os.getenv("DB_USER", default="postgres")
@@ -33,6 +34,5 @@ REDIS_URL: str = f"redis://{REDIS_HOST}:{REDIS_PORT}"
 RABBITMQ_USER: str = os.getenv("RABBITMQ_USER", default="rabbit")
 RABBITMQ_PASS: str = os.getenv("RABBITMQ_PASS", default="rabbit")
 RABBITMQ_HOST: str = os.getenv("RABBITMQ_HOST", default="localhost")
-RABBITMQ_VHOST: str = os.getenv("RABBITMQ_VHOST", default="vhost")
 RABBITMQ_PORT: int = int(os.getenv("RABBITMQ_PORT", default="5672"))
-RABBITMQ_URL: str = f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/{RABBITMQ_VHOST}"
+RABBITMQ_URL: str = f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}//"

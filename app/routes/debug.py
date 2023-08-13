@@ -11,14 +11,14 @@ router = APIRouter()
 
 @router.get(
     "/load_from_excel",
-    summary="Загрузить все данные из Menu.xlsx",
-    response_description="Загрузить все данные из Menu.xlsx",
+    summary="Загрузить все данные из Menu.xlsx в пустую БД",
+    response_description="Загрузить все данные из Menu.xlsx в пустую БД",
     responses={200: {"model": MessageStatus}},
 )
 async def load_menus_from_xls(
         datas_service: Annotated[DataService, Depends(get_data_service)],
 ):
-    """Загружает все данные из Menu.xlsx в базу данных"""
+    """Загружает все данные из Menu.xlsx в базу данных, использовать при пустой таблице"""
     return await datas_service.load_to_database()
 
 
