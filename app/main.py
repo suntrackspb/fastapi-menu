@@ -2,6 +2,7 @@ from fastapi import FastAPI
 
 from app.db.database import db_init
 from app.db.redis import cache_init
+from app.routes.data import router as datas_router
 from app.routes.dish import router as dish_router
 from app.routes.menu import router as menu_router
 from app.routes.submenu import router as submenu_router
@@ -31,4 +32,10 @@ app.include_router(
     dish_router,
     prefix="/api/v1/menus/{menu_id}/submenus/{submenu_id}",
     tags=["dishes"],
+)
+
+app.include_router(
+    datas_router,
+    prefix="/api/v1",
+    tags=["Datas"],
 )
