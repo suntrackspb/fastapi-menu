@@ -9,14 +9,14 @@ from openpyxl import load_workbook
 from sqlalchemy import create_engine
 
 from app.celery.hash_xls import calculate_file_hash, read_hash, write_hash
-from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, EXCEL_FILE
+from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
 celery_app = Celery()
 
-celery_app.conf.broker_url = 'amqp://guest:guest@rabbitmq:5672//'
-celery_app.conf.result_backend = 'rpc://'
+celery_app.conf.broker_url = "amqp://guest:guest@rabbitmq:5672//"
+celery_app.conf.result_backend = "rpc://"
 celery_app.conf.broker_connection_retry_on_startup = True
 
 celery_app.conf.beat_schedule = {
@@ -28,7 +28,7 @@ celery_app.conf.beat_schedule = {
 
 
 def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]], dict[str, dict[Any, Any]]]:
-    wb = load_workbook(EXCEL_FILE)
+    wb = load_workbook(Path("./app/admin/Menu.xlsx"))
     sheet = wb.active
 
     menu_json: dict[str, dict] = {"id": {}, "title": {}, "description": {}}
@@ -72,8 +72,8 @@ def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]
 
 @celery_app.task
 def pandas_update_database() -> None:
-    new_hash = calculate_file_hash(EXCEL_FILE)
-    if not Path.exists(EXCEL_FILE.parent.joinpath("hash")):
+    new_hash = calculate_file_hash()
+    if not Path.exists(Path("./app/admin/hash")):
         write_hash(new_hash)
     old_hash = read_hash()
 

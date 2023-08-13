@@ -24,7 +24,7 @@ docker-compose up -d
 Open http://localhost:8000/docs/
 ```shell
 #Stop & delete
-docker-compose down --remove-orphans
+docker-compose down --rmi all --remove-orphans
 ```
 
 ## Run Tests on Docker:
@@ -35,7 +35,7 @@ docker start -a fastapi_test_app
 ```
 ```shell
 #Stop & delete
-docker-compose down --remove-orphans
+docker-compose down --rmi all --remove-orphans
 ```
 
 ## Run on local:
