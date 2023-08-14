@@ -1,23 +1,22 @@
-from uuid import UUID
-
 from pydantic import BaseModel
 
-from app.schemas.dish import DishGet
-from app.schemas.menu import MenuGet
-from app.schemas.submenu import SubmenuGet
+
+class DishSchema(BaseModel):
+    title: str
+    description: str
+    price: str
 
 
-class DishesFull(list[DishGet]):
-    submenu_id: UUID
+class SubmenuSchema(BaseModel):
+    title: str
+    description: str | None
+    dishes: list[DishSchema]
 
 
-class SubmenusFull(list[SubmenuGet]):
-    menu_id: UUID
-    dishes: list[DishesFull]
-
-
-class MenusFull(MenuGet):
-    submenus: list[SubmenuGet]
+class MenuSchema(BaseModel):
+    title: str
+    description: str | None
+    submenus: list[SubmenuSchema]
 
 
 class MessageStatus(BaseModel):
