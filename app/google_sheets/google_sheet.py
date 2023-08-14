@@ -6,6 +6,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+from app.config import GOOGLE_REDIRECT_PORT
+
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
     'https://www.googleapis.com/auth/spreadsheets.readonly',
@@ -26,7 +28,7 @@ def auth():
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=55423)
+            creds = flow.run_local_server(port=GOOGLE_REDIRECT_PORT)
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
     return creds

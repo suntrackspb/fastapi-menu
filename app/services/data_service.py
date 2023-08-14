@@ -30,7 +30,7 @@ class DataService:
             db_full = cached_data
         else:
             db_full = await self.crud.get_list_without_id()
-            await self.cache.set_all("full_menu", db_full)
+            await self.cache.add("full_menu", db_full)
         return db_full
 
     # DEBUG FUNCTIONS

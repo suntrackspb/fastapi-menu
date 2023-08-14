@@ -19,21 +19,10 @@ async def on_startup() -> None:
     await db_init()
     await cache_init()
 
-
 app.include_router(
-    menu_router,
+    google_router,
     prefix="/api/v1",
-    tags=["menus"],
-)
-app.include_router(
-    submenu_router,
-    prefix="/api/v1/menus/{menu_id}",
-    tags=["submenus"],
-)
-app.include_router(
-    dish_router,
-    prefix="/api/v1/menus/{menu_id}/submenus/{submenu_id}",
-    tags=["dishes"],
+    tags=["Google"],
 )
 
 app.include_router(
@@ -43,13 +32,25 @@ app.include_router(
 )
 
 app.include_router(
-    debug_router,
+    menu_router,
     prefix="/api/v1",
-    tags=["Debug"],
+    tags=["menus"],
 )
 
 app.include_router(
-    google_router,
+    submenu_router,
+    prefix="/api/v1/menus/{menu_id}",
+    tags=["submenus"],
+)
+
+app.include_router(
+    dish_router,
+    prefix="/api/v1/menus/{menu_id}/submenus/{submenu_id}",
+    tags=["dishes"],
+)
+
+app.include_router(
+    debug_router,
     prefix="/api/v1",
-    tags=["Google"],
+    tags=["Debug"],
 )

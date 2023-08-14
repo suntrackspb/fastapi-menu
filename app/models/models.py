@@ -16,7 +16,7 @@ class Dish(Base):
     title = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     price = Column(String, nullable=False)
-    discount = Column(Integer, nullable=True)
+    discount = Column(Integer, nullable=False, default=int(1))
     submenus = relationship("Submenu", back_populates="dishes")
 
 

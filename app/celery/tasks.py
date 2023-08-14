@@ -53,7 +53,8 @@ def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[st
 
     menu_json: dict[str, dict] = {"id": {}, "title": {}, "description": {}}
     submenu_json: dict[str, dict] = {"id": {}, "menu_id": {}, "title": {}, "description": {}}
-    dish_json: dict[str, dict] = {"id": {}, "submenu_id": {}, "title": {}, "description": {}, "price": {}}
+    dish_json: dict[str, dict] = {"id": {}, "submenu_id": {},
+                                  "title": {}, "description": {}, "price": {}, "discount": {}}
 
     menu_count, sub_count, dish_count = 0, 0, 0
 
@@ -82,6 +83,7 @@ def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[st
             dish_json["title"][dish_count] = row[3]
             dish_json["description"][dish_count] = row[4]
             dish_json["price"][dish_count] = row[5]
+            dish_json["discount"][dish_count] = 1
             if len(row) > 6 and row[6] is not None:
                 dish_json["discount"][dish_count] = row[6]
             dish_count += 1
@@ -89,6 +91,10 @@ def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[st
 
 
 def run_update_database(data: list) -> None:
+    print("===" * 30)
+    print("RUN UPDATE DATABASE")
+    print("===" * 30)
+
     menus_data, submenus_data, dishes_data = excel_to_json(data)
     dish_df = pd.read_json(json.dumps(dishes_data))
     dish_df.to_sql("dishes", engine, if_exists="replace", index=False)
@@ -102,9 +108,13 @@ def run_update_database(data: list) -> None:
 
 @celery_app.task
 def pandas_update_database() -> None:
-    if USE_GOOGLE:
+    bool_value = (USE_GOOGLE == "True")
+    if bool_value:
         creds = auth()
         data = get_data(creds)
+        print("===" * 15)
+        print("USE GOOGLE")
+        print("===" * 15)
         run_update_database(data)
     else:
         if Path(admin_file).exists():
@@ -116,7 +126,12 @@ def pandas_update_database() -> None:
             sheet = wb.active
             data = sheet.iter_rows(values_only=True)
             if old_hash != new_hash:
+                print("===" * 15)
+                print("USE LOCAL")
+                print("===" * 15)
                 run_update_database(data)
                 write_hash(new_hash)
             else:
+                print("===" * 15)
                 print("DIFF NOT FOUND")
+                print("===" * 15)

@@ -6,7 +6,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/google_auth",
+    "/google_scope",
     summary="Запрос разрешений от Google Api",
     response_description="Запрос разрешений от Google Api",
 )

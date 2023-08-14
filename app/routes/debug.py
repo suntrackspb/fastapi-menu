@@ -2,7 +2,9 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
+from app.celery.tasks import pandas_update_database
 from app.depend import get_data_service
+from app.google_sheets.google_sheet import auth, get_data
 from app.schemas.data import MessageStatus
 from app.services.data_service import DataService
 
@@ -33,3 +35,25 @@ async def unload_from_database(
 ):
     """Выгружает данные из базы данных в excel таблицу и сохраняет в файл Database.xlsx"""
     return await datas_service.unload_to_excel()
+
+
+@router.get(
+    "/celety_task_test",
+    summary="celery task",
+    response_description="celery task",
+    responses={200: {"model": MessageStatus}},
+)
+async def manual_celery_task():
+    """celery task"""
+    return pandas_update_database()
+
+
+@router.get(
+    "/google_test",
+    summary="Запрос данных от Google Api",
+    response_description="Запрос данных от Google Api",
+)
+async def read_data():
+    """Запросить разрешения googleAPi"""
+    creds = auth()
+    return get_data(creds)

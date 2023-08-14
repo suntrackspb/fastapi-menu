@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from aioredis import Redis
 from fastapi.encoders import jsonable_encoder
@@ -17,6 +18,11 @@ class CacheService:
         data_str = json.dumps(jsonable_encoder(data))
         set_cache: str = await self.cache.set(list_name, data_str)
         await self.cache.expire(list_name, REDIS_EXPIRE)
+        return set_cache
+
+    async def add(self, key: str, value: Any):
+        value = json.dumps(value)
+        set_cache = await self.cache.set(key, value, ex=REDIS_EXPIRE)
         return set_cache
 
     async def get(self, name: str):
