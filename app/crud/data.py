@@ -15,13 +15,6 @@ class DataCrud:
             return None
         return db_submenu
 
-    async def get_list_with_id(self) -> list[dict]:
-        return (
-            await self.db.execute(
-                select(Menu).options(subqueryload(Menu.submenus).subqueryload(Submenu.dishes)),
-            )
-        ).scalars().fetchall()
-
     async def get_dish_by_title(self, key: str, value: str) -> Dish | None:
         result = await self.db.execute(
             select(Dish).where(getattr(Dish, key) == value),
@@ -48,6 +41,13 @@ class DataCrud:
         if menu:
             return menu
         return None
+
+    async def get_list_with_id(self) -> list[dict]:
+        return (
+            await self.db.execute(
+                select(Menu).options(subqueryload(Menu.submenus).subqueryload(Submenu.dishes)),
+            )
+        ).scalars().fetchall()
 
     async def get_list_without_id(self) -> list[dict] | None:
         dish_subquery = (
@@ -95,4 +95,4 @@ class DataCrud:
 
         db_response = await self.db.execute(query)
         db_data = [dict(data) for data in db_response]
-        return db_data if db_data else None
+        return db_data
