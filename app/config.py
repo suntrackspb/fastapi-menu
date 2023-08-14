@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 if os.getenv("MODE") == "TEST":
-    load_dotenv(".env.local")
+    load_dotenv(".env.test")
 elif os.getenv("MODE") == "PROD":
     load_dotenv(".env")
 else:

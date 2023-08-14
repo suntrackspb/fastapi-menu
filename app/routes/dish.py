@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, BackgroundTasks, Body, Depends
 
 from app.depend import get_dish_service
 from app.schemas.dish import DishCreate, DishGet, DishUpdate
@@ -50,6 +50,7 @@ async def read_dish(
 async def create_dish(
         menu_id: str,
         submenu_id: str,
+        background_tasks: BackgroundTasks,
         dish: Annotated[
             DishCreate, Body(
                 example={
@@ -66,6 +67,7 @@ async def create_dish(
         menu_id=menu_id,
         submenu_id=submenu_id,
         dish=dish,
+        background_tasks=background_tasks,
     )
 
 
@@ -78,6 +80,7 @@ async def create_dish(
 )
 async def update_dish(
         dish_id: str,
+        background_tasks: BackgroundTasks,
         dish: Annotated[
             DishUpdate, Body(
                 example={
@@ -93,6 +96,7 @@ async def update_dish(
     return await dish_service.update_dish(
         dish_id=dish_id,
         dish=dish,
+        background_tasks=background_tasks,
     )
 
 
@@ -105,6 +109,7 @@ async def delete_dish(
         menu_id: str,
         submenu_id: str,
         dish_id: str,
+        background_tasks: BackgroundTasks,
         dish_service: Annotated[DishService, Depends(get_dish_service)],
 ):
     """Удалить блюдо"""
@@ -112,4 +117,5 @@ async def delete_dish(
         menu_id=menu_id,
         submenu_id=submenu_id,
         dish_id=dish_id,
+        background_tasks=background_tasks,
     )

@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import BackgroundTasks, HTTPException
 
 from app.crud.submenu import SubmenuCrud
 from app.schemas.submenu import SubmenuCreate, SubmenuUpdate
@@ -40,6 +40,7 @@ class SubmenuService:
         self,
         menu_id: str,
         submenu: SubmenuCreate,
+        background_tasks: BackgroundTasks,
     ):
         db_submenu = await self.crud.get_by_title(title=submenu.title)
         if db_submenu:
@@ -47,9 +48,9 @@ class SubmenuService:
                 status_code=400,
                 detail="submenu with this title already exist",
             )
-        await self.cache.delete(f"menu_{menu_id}")
-        await self.cache.delete("submenu_list")
-        await self.cache.delete("menu_list")
+        background_tasks.add_task(self.cache.delete, f"menu_{menu_id}")
+        background_tasks.add_task(self.cache.delete, "submenu_list")
+        background_tasks.add_task(self.cache.delete, "menu_list")
         return await self.crud.create(
             submenu=submenu,
             menu_id=menu_id,
@@ -59,6 +60,7 @@ class SubmenuService:
         self,
         submenu_id: str,
         submenu: SubmenuUpdate,
+        background_tasks: BackgroundTasks,
     ):
         db_submenu = await self.crud.get(submenu_id=submenu_id)
         if db_submenu is None:
@@ -68,21 +70,24 @@ class SubmenuService:
             submenu_id=submenu_id,
         )
         await self.cache.set(f"submenu_{submenu_id}", updated_submenu)
-        await self.cache.delete("submenu_list")
+        background_tasks.add_task(self.cache.delete, "submenu_list")
         return updated_submenu
 
     async def delete_submenu(
         self,
         menu_id: str,
         submenu_id: str,
+        background_tasks: BackgroundTasks,
     ):
         db_submenu = await self.crud.get(submenu_id=submenu_id)
         if db_submenu is None:
             raise HTTPException(status_code=404, detail="submenu not found")
+
         await self.crud.delete(submenu_id=submenu_id)
-        await self.cache.delete(f"menu_{menu_id}")
-        await self.cache.delete(f"submenu_{submenu_id}")
-        await self.cache.delete("menu_list")
-        await self.cache.delete("submenu_list")
-        await self.cache.delete("dish_list")
+        background_tasks.add_task(self.cache.delete, f"menu_{menu_id}")
+        background_tasks.add_task(self.cache.delete, f"submenu_{submenu_id}")
+        background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "submenu_list")
+        background_tasks.add_task(self.cache.delete, "dish_list")
+
         return {"status": "true", "message": "The menu has been deleted"}

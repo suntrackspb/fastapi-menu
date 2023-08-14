@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, BackgroundTasks, Body, Depends
 
 from app.depend import get_submenu_service
 from app.schemas.errors import Message404, MessageDeleted
@@ -50,6 +50,7 @@ async def read_submenu(
 )
 async def create_submenu(
         menu_id: str,
+        background_tasks: BackgroundTasks,
         submenu: Annotated[SubmenuCreate, Body(
             example={
                 "title": "Submenu 1",
@@ -62,6 +63,7 @@ async def create_submenu(
     return await submenu_service.create_submenu(
         menu_id=menu_id,
         submenu=submenu,
+        background_tasks=background_tasks,
     )
 
 
@@ -74,6 +76,7 @@ async def create_submenu(
 )
 async def update_submenu(
         submenu_id: str,
+        background_tasks: BackgroundTasks,
         submenu: Annotated[SubmenuUpdate, Body(
             example={
                 "title": "Submenu 1 updated",
@@ -86,6 +89,7 @@ async def update_submenu(
     return await submenu_service.update_submenu(
         submenu_id=submenu_id,
         submenu=submenu,
+        background_tasks=background_tasks,
     )
 
 
@@ -97,10 +101,12 @@ async def update_submenu(
 async def delete_submenu(
         menu_id: str,
         submenu_id: str,
+        background_tasks: BackgroundTasks,
         submenu_service: Annotated[SubmenuService, Depends(get_submenu_service)],
 ):
     """Удалить подменю"""
     return await submenu_service.delete_submenu(
         menu_id=menu_id,
         submenu_id=submenu_id,
+        background_tasks=background_tasks,
     )

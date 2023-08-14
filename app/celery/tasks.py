@@ -1,3 +1,4 @@
+import hashlib
 import json
 from datetime import timedelta
 from pathlib import Path
@@ -8,7 +9,6 @@ from celery import Celery
 from openpyxl import load_workbook
 from sqlalchemy import create_engine
 
-from app.celery.hash_xls import calculate_file_hash, read_hash, write_hash
 from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
@@ -25,6 +25,24 @@ celery_app.conf.beat_schedule = {
         "schedule": timedelta(seconds=15),
     },
 }
+
+
+def calculate_file_hash() -> str:
+    with Path("./app/admin/Menu.xlsx").open("rb") as f:
+        hasher = hashlib.sha256()
+        while chunk := f.read(65536):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def read_hash() -> str:
+    with Path("./app/admin/hash").open("r") as f:
+        return f.read()
+
+
+def write_hash(hash_summ: str) -> None:
+    with Path("./app/admin/hash").open("w") as f:
+        f.write(hash_summ)
 
 
 def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]], dict[str, dict[Any, Any]]]:
@@ -74,19 +92,29 @@ def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]
 def pandas_update_database() -> None:
     new_hash = calculate_file_hash()
     if not Path.exists(Path("./app/admin/hash")):
-        write_hash(new_hash)
+        write_hash("22222")
     old_hash = read_hash()
+
+    print("###" * 30)
+    print(old_hash)
+    print("###" * 30)
+    print(new_hash)
+    print("###" * 30)
+    print(Path("./app/admin/hash"))
+    print(Path("./app/admin/Menu.xlsx"))
+    print("###" * 30)
 
     if old_hash != new_hash:
         menus_data, submenus_data, dishes_data = excel_to_json()
+        dish_df = pd.read_json(json.dumps(dishes_data))
+        dish_df.to_sql("dishes", engine, if_exists="replace", index=False)
+
+        submenu_df = pd.read_json(json.dumps(submenus_data))
+        submenu_df.to_sql("submenus", engine, if_exists="replace", index=False)
 
         menu_df = pd.read_json(json.dumps(menus_data))
         menu_df.to_sql("menus", engine, if_exists="replace", index=False)
 
-        submenu_df = pd.read_json(json.dumps(menus_data))
-        submenu_df.to_sql("submenus", engine, if_exists="replace", index=False)
-
-        dish_df = pd.read_json(json.dumps(menus_data))
-        dish_df.to_sql("dishes", engine, if_exists="replace", index=False)
-
         write_hash(new_hash)
+    else:
+        print("DIFF NOT FOUND")

@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Body, Depends
+from fastapi import APIRouter, BackgroundTasks, Body, Depends
 
 from app.depend import get_menu_service
 from app.schemas.errors import Message404, MessageDeleted
@@ -15,6 +15,7 @@ router = APIRouter()
     response_model=list[MenuGet],
     summary="Получить список меню",
     response_description="Список всех меню",
+
 )
 async def read_menus(
         menu_service: Annotated[MenuService, Depends(get_menu_service)],
@@ -44,6 +45,7 @@ async def read_menu(
     status_code=201,
 )
 async def create_menu(
+        background_tasks: BackgroundTasks,
         menu: Annotated[MenuCreate, Body(
             example={
                 "title": "Menu 1",
@@ -53,7 +55,7 @@ async def create_menu(
         menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Создать меню"""
-    return await menu_service.create_menu(menu=menu)
+    return await menu_service.create_menu(menu=menu, background_tasks=background_tasks)
 
 
 @router.patch(
@@ -62,9 +64,11 @@ async def create_menu(
     responses={404: {"model": Message404}},
     summary="Изменить меню",
     response_description="Измененное меню",
+
 )
 async def update_menu(
         menu_id: str,
+        background_tasks: BackgroundTasks,
         menu: Annotated[MenuUpdate, Body(
             example={
                 "title": "Menu 1 updated",
@@ -77,6 +81,7 @@ async def update_menu(
     return await menu_service.update_menu(
         menu_id=menu_id,
         menu=menu,
+        background_tasks=background_tasks,
     )
 
 
@@ -87,9 +92,11 @@ async def update_menu(
 )
 async def delete_menu(
         menu_id: str,
+        background_tasks: BackgroundTasks,
         menu_service: Annotated[MenuService, Depends(get_menu_service)],
 ):
     """Удалить меню"""
     return await menu_service.delete_menu(
         menu_id=menu_id,
+        background_tasks=background_tasks,
     )

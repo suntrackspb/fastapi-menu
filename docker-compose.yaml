@@ -61,14 +61,13 @@ services:
       dockerfile: Dockerfile
     env_file:
       - .env
-    entrypoint: >
-      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    entrypoint: sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000"
     ports:
       - "8000:8000"
     environment:
       MODE: "PROD"
     volumes:
-      - api_data:/app/admin
+      - ./:/app
     networks:
       - fastapi_project_network
     restart: always
@@ -83,9 +82,11 @@ services:
   celery-worker:
     container_name: fastapi_project_celery_worker
     build: .
+    env_file:
+      - .env
     volumes:
-      - ./:/usr/src/app
-    command: celery -A app.celery.tasks worker
+      - ./:/app
+    command: celery -A app.celery.tasks worker --loglevel=DEBUG
     networks:
       - fastapi_project_network
     depends_on:
@@ -99,9 +100,11 @@ services:
   celery-beat:
     container_name: fastapi_project_celery_beat
     build: .
+    env_file:
+      - .env
     volumes:
-      - ./:/usr/src/app
-    command: celery -A app.celery.tasks beat
+      - ./:/app
+    command: celery -A app.celery.tasks beat --loglevel=DEBUG
     networks:
       - fastapi_project_network
     depends_on:
@@ -116,9 +119,7 @@ services:
 
 volumes:
   postgres_data:
-  api_data:
-  shared_beat:
-  shared_work:
+  web_api_data:
 
 networks:
   fastapi_project_network:

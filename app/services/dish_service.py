@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import BackgroundTasks, HTTPException
 
 from app.crud.dish import DishCrud
 from app.schemas.dish import DishCreate, DishUpdate
@@ -35,6 +35,7 @@ class DishService:
         menu_id: str,
         submenu_id: str,
         dish: DishCreate,
+        background_tasks: BackgroundTasks,
     ):
         db_dish = await self.crud.get_by_title(title=dish.title)
         if db_dish:
@@ -42,11 +43,11 @@ class DishService:
                 status_code=400,
                 detail="dish with this title already exist",
             )
-        await self.cache.delete(f"menu_{menu_id}")
-        await self.cache.delete(f"submenu_{submenu_id}")
-        await self.cache.delete("menu_list")
-        await self.cache.delete("submenu_list")
-        await self.cache.delete("dish_list")
+        background_tasks.add_task(self.cache.delete, f"menu_{menu_id}")
+        background_tasks.add_task(self.cache.delete, f"submenu_{submenu_id}")
+        background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "submenu_list")
+        background_tasks.add_task(self.cache.delete, "dish_list")
         return await self.crud.create(
             dish=dish,
             submenu_id=submenu_id,
@@ -56,6 +57,7 @@ class DishService:
         self,
         dish_id: str,
         dish: DishUpdate,
+        background_tasks: BackgroundTasks,
     ):
         db_dish = await self.crud.get(dish_id=dish_id)
         if db_dish is None:
@@ -65,7 +67,7 @@ class DishService:
             dish_id=dish_id,
         )
         await self.cache.set(f"dish_{dish_id}", updated_dish)
-        await self.cache.delete("dish_list")
+        background_tasks.add_task(self.cache.delete, "dish_list")
         return updated_dish
 
     async def delete_dish(
@@ -73,15 +75,16 @@ class DishService:
         menu_id: str,
         submenu_id: str,
         dish_id: str,
+        background_tasks: BackgroundTasks,
     ):
         db_dish = await self.crud.get(dish_id=dish_id)
         if db_dish is None:
             raise HTTPException(status_code=404, detail="dish not found")
         await self.crud.delete(dish_id=dish_id)
-        await self.cache.delete(f"menu_{menu_id}")
-        await self.cache.delete(f"submenu_{submenu_id}")
-        await self.cache.delete(f"dish_{dish_id}")
-        await self.cache.delete("menu_list")
-        await self.cache.delete("submenu_list")
-        await self.cache.delete("dish_list")
+        background_tasks.add_task(self.cache.delete, f"menu_{menu_id}")
+        background_tasks.add_task(self.cache.delete, f"submenu_{submenu_id}")
+        background_tasks.add_task(self.cache.delete, f"dish_{dish_id}")
+        background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "submenu_list")
+        background_tasks.add_task(self.cache.delete, "dish_list")
         return {"status": "true", "message": "The menu has been deleted"}
