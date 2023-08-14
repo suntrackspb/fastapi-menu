@@ -37,7 +37,6 @@ class MenuService:
                 status_code=400,
                 detail="menu with this title already exist",
             )
-        # await self.cache.delete("menu_list")
         background_tasks.add_task(self.cache.delete, "menu_list")
         background_tasks.add_task(self.cache.delete, "full_menu")
         background_tasks.add_task(self.cache.delete, "full_menu_ids")

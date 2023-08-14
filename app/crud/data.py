@@ -94,5 +94,4 @@ class DataCrud:
         )
 
         db_response = await self.db.execute(query)
-        db_data = [dict(data) for data in db_response]
-        return db_data
+        return [dict(data) for data in db_response]

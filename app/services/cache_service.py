@@ -22,8 +22,7 @@ class CacheService:
 
     async def add(self, key: str, value: Any):
         value = json.dumps(value)
-        set_cache = await self.cache.set(key, value, ex=REDIS_EXPIRE)
-        return set_cache
+        return await self.cache.set(key, value, ex=REDIS_EXPIRE)
 
     async def get(self, name: str):
         value = await self.cache.get(name)
