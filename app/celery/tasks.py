@@ -83,7 +83,7 @@ def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[st
             dish_json["title"][dish_count] = row[3]
             dish_json["description"][dish_count] = row[4]
             dish_json["price"][dish_count] = row[5]
-            dish_json["discount"][dish_count] = 1
+            dish_json["discount"][dish_count] = 0
             if len(row) > 6 and row[6] is not None:
                 dish_json["discount"][dish_count] = row[6]
             dish_count += 1

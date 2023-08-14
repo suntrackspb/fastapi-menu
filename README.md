@@ -11,14 +11,16 @@
 из задания не понятен формат ответа:
 `3.Добавить эндпоинт (GET) для вывода всех меню со всеми связанными подменю и со всеми связанными блюдами.`
 поэтому сделал 2 endpoints (разными запросами)
+
 http://localhost:8000/api/v1/full_menu_with_id - полная информация с ID и счетчиками
+
 http://localhost:8000/api/v1/full_menu_without_id - "чистая" информация
 
 Так же есть 2 debug endpoints на ручную загрузку из Menu.xlsx и на выгрузку из базы в Database.xlsx
 
 Переключение между Local xlsx и Google Sheets в .env `USE_GOOGLE_SHEET=False`
 GoogleApi требует credentials.json, но я не совсем понял как обновлять токен, так как он временный / папка google_sheet
-Подсчёт процентов скидки из столбца G / /app/service/dish_service.py :21 :32
+Подсчёт процентов скидки из столбца G / Реализовано через computed_field в /app/schemas/data.py, dish.py
 
 
 
