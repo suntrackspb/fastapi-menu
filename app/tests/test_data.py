@@ -76,3 +76,10 @@ async def test_get_full_menu_without_id(ac: AsyncClient):
     response_get_all_menus = await ac.get("/api/v1/full_menu_without_id")
     assert response_get_all_menus.status_code == 200
     assert response_get_all_menus.json() != []
+
+
+async def test_delete_menu(ac: AsyncClient):
+    response_delete_menu = await ac.delete(
+        f"/api/v1/menus/{Menu.id}",
+    )
+    assert response_delete_menu.status_code == 200

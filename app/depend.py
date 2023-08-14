@@ -71,5 +71,6 @@ async def get_data_crud(db: Annotated[Session, Depends(get_db)]):
 
 async def get_data_service(
         crud: Annotated[DataCrud, Depends(get_data_crud)],
+        cache: Annotated[CacheService, Depends(get_cache)],
 ):
-    return DataService(crud)
+    return DataService(crud, cache=cache)

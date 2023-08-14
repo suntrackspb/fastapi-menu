@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, String, func, select
+from sqlalchemy import Column, ForeignKey, Integer, String, func, select
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import column_property, relationship
 
@@ -16,6 +16,7 @@ class Dish(Base):
     title = Column(String, nullable=False, unique=True)
     description = Column(String, nullable=False)
     price = Column(String, nullable=False)
+    discount = Column(Integer, nullable=True)
     submenus = relationship("Submenu", back_populates="dishes")
 
 

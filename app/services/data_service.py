@@ -7,17 +7,31 @@ import openpyxl.styles
 
 from app.config import BASE_URL
 from app.crud.data import DataCrud
+from app.services.cache_service import CacheService
 
 
 class DataService:
-    def __init__(self, crud: DataCrud):
+    def __init__(self, crud: DataCrud, cache: CacheService):
         self.crud = crud
+        self.cache = cache
 
     async def get_full_with_id(self) -> list[dict]:
-        return await self.crud.get_list_with_id()
+        cached_data = await self.cache.get("full_menu_ids")
+        if cached_data:
+            db_full_ids = cached_data
+        else:
+            db_full_ids = await self.crud.get_list_with_id()
+            await self.cache.set_all("full_menu_ids", db_full_ids)
+        return db_full_ids
 
     async def get_full_without_id(self) -> list[dict[Any, Any]] | None:
-        return await self.crud.get_list_without_id()
+        cached_data = await self.cache.get("full_menu")
+        if cached_data:
+            db_full = cached_data
+        else:
+            db_full = await self.crud.get_list_without_id()
+            await self.cache.set_all("full_menu", db_full)
+        return db_full
 
     # DEBUG FUNCTIONS
 

@@ -39,6 +39,8 @@ class MenuService:
             )
         # await self.cache.delete("menu_list")
         background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return await self.crud.create(menu=menu)
 
     async def update_menu(self, menu_id: str, menu: MenuUpdate, background_tasks: BackgroundTasks):
@@ -48,6 +50,8 @@ class MenuService:
         updated_menu = await self.crud.update(menu=menu, menu_id=menu_id)
         await self.cache.set(f"menu_{menu_id}", updated_menu)
         background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return updated_menu
 
     async def delete_menu(self, menu_id: str, background_tasks: BackgroundTasks):
@@ -57,4 +61,6 @@ class MenuService:
         await self.crud.delete(menu_id=menu_id)
         background_tasks.add_task(self.cache.delete, f"menu_{menu_id}")
         background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return {"status": "true", "message": "The menu has been deleted"}

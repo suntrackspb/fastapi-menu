@@ -27,6 +27,9 @@ celery_app.conf.beat_schedule = {
     },
 }
 
+admin_file = Path("./app/admin/Menu.xlsx")
+hash_file = Path("./app/admin/hash")
+
 
 def calculate_file_hash() -> str:
     with Path("./app/admin/Menu.xlsx").open("rb") as f:
@@ -78,11 +81,9 @@ def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[st
             dish_json["submenu_id"][dish_count] = current_sub_id
             dish_json["title"][dish_count] = row[3]
             dish_json["description"][dish_count] = row[4]
+            dish_json["price"][dish_count] = row[5]
             if len(row) > 6 and row[6] is not None:
-                new_price = float(row[5]) * (100 - int(row[6])) / 100
-                dish_json["price"][dish_count] = new_price
-            else:
-                dish_json["price"][dish_count] = row[5]
+                dish_json["discount"][dish_count] = row[6]
             dish_count += 1
     return menu_json, submenu_json, dish_json
 
@@ -106,15 +107,16 @@ def pandas_update_database() -> None:
         data = get_data(creds)
         run_update_database(data)
     else:
-        new_hash = calculate_file_hash()
-        if not Path.exists(Path("./app/admin/hash")):
-            write_hash("22222")
-        old_hash = read_hash()
-        wb = load_workbook(Path("./app/admin/Menu.xlsx"))
-        sheet = wb.active
-        data = sheet.iter_rows(values_only=True)
-        if old_hash != new_hash:
-            run_update_database(data)
-            write_hash(new_hash)
-        else:
-            print("DIFF NOT FOUND")
+        if Path(admin_file).exists():
+            new_hash = calculate_file_hash()
+            if not Path.exists(hash_file):
+                write_hash("22222")
+            old_hash = read_hash()
+            wb = load_workbook(admin_file)
+            sheet = wb.active
+            data = sheet.iter_rows(values_only=True)
+            if old_hash != new_hash:
+                run_update_database(data)
+                write_hash(new_hash)
+            else:
+                print("DIFF NOT FOUND")

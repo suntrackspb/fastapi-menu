@@ -16,6 +16,9 @@ class DishService:
             db_dishes = cached_data
         else:
             db_dishes = await self.crud.get_list()
+            for dish in db_dishes:
+                if dish.discount is not None:
+                    dish.price = str(float(dish.price) * (100 - int(dish.discount)) / 100)
             await self.cache.set_all("dish_list", db_dishes)
         return db_dishes
 
@@ -25,6 +28,8 @@ class DishService:
             db_dish = cached_data
         else:
             db_dish = await self.crud.get(dish_id)
+            if db_dish.discount is not None:
+                db_dish.price = str(float(db_dish.price) * (100 - int(db_dish.discount)) / 100)
             if db_dish is None:
                 raise HTTPException(status_code=404, detail="dish not found")
             await self.cache.set(f"dish_{dish_id}", db_dish)
@@ -48,6 +53,8 @@ class DishService:
         background_tasks.add_task(self.cache.delete, "menu_list")
         background_tasks.add_task(self.cache.delete, "submenu_list")
         background_tasks.add_task(self.cache.delete, "dish_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return await self.crud.create(
             dish=dish,
             submenu_id=submenu_id,
@@ -68,6 +75,8 @@ class DishService:
         )
         await self.cache.set(f"dish_{dish_id}", updated_dish)
         background_tasks.add_task(self.cache.delete, "dish_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return updated_dish
 
     async def delete_dish(
@@ -87,4 +96,6 @@ class DishService:
         background_tasks.add_task(self.cache.delete, "menu_list")
         background_tasks.add_task(self.cache.delete, "submenu_list")
         background_tasks.add_task(self.cache.delete, "dish_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return {"status": "true", "message": "The menu has been deleted"}

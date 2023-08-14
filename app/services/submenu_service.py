@@ -51,6 +51,8 @@ class SubmenuService:
         background_tasks.add_task(self.cache.delete, f"menu_{menu_id}")
         background_tasks.add_task(self.cache.delete, "submenu_list")
         background_tasks.add_task(self.cache.delete, "menu_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return await self.crud.create(
             submenu=submenu,
             menu_id=menu_id,
@@ -71,6 +73,8 @@ class SubmenuService:
         )
         await self.cache.set(f"submenu_{submenu_id}", updated_submenu)
         background_tasks.add_task(self.cache.delete, "submenu_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return updated_submenu
 
     async def delete_submenu(
@@ -89,5 +93,7 @@ class SubmenuService:
         background_tasks.add_task(self.cache.delete, "menu_list")
         background_tasks.add_task(self.cache.delete, "submenu_list")
         background_tasks.add_task(self.cache.delete, "dish_list")
+        background_tasks.add_task(self.cache.delete, "full_menu")
+        background_tasks.add_task(self.cache.delete, "full_menu_ids")
 
         return {"status": "true", "message": "The menu has been deleted"}
