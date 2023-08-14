@@ -9,7 +9,8 @@ from celery import Celery
 from openpyxl import load_workbook
 from sqlalchemy import create_engine
 
-from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER
+from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, USE_GOOGLE
+from app.google_sheets.google_sheet import auth, get_data
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
@@ -45,9 +46,7 @@ def write_hash(hash_summ: str) -> None:
         f.write(hash_summ)
 
 
-def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]], dict[str, dict[Any, Any]]]:
-    wb = load_workbook(Path("./app/admin/Menu.xlsx"))
-    sheet = wb.active
+def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]], dict[str, dict[Any, Any]]]:
 
     menu_json: dict[str, dict] = {"id": {}, "title": {}, "description": {}}
     submenu_json: dict[str, dict] = {"id": {}, "menu_id": {}, "title": {}, "description": {}}
@@ -58,15 +57,15 @@ def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]
     current_menu_id = ""
     current_sub_id = ""
 
-    for row in sheet.iter_rows(values_only=True):
-        if row[0] is not None and row[1] is not None:
+    for row in array:
+        if bool(row[0]) and bool(row[1]):
             current_menu_id = row[0]
             menu_json["id"][menu_count] = row[0]
             menu_json["title"][menu_count] = row[1]
             menu_json["description"][menu_count] = row[2]
             menu_count += 1
 
-        if row[0] is None and row[1] is not None:
+        elif bool(row[0]) is False and bool(row[1]):
             current_sub_id = row[1]
             submenu_json["id"][sub_count] = row[1]
             submenu_json["menu_id"][sub_count] = current_menu_id
@@ -74,7 +73,7 @@ def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]
             submenu_json["description"][sub_count] = row[3]
             sub_count += 1
 
-        if row[0] is None and row[1] is None:
+        elif bool(row[0]) is False and bool(row[1]) is False:
             dish_json["id"][dish_count] = row[2]
             dish_json["submenu_id"][dish_count] = current_sub_id
             dish_json["title"][dish_count] = row[3]
@@ -88,33 +87,34 @@ def excel_to_json() -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]
     return menu_json, submenu_json, dish_json
 
 
+def run_update_database(data: list) -> None:
+    menus_data, submenus_data, dishes_data = excel_to_json(data)
+    dish_df = pd.read_json(json.dumps(dishes_data))
+    dish_df.to_sql("dishes", engine, if_exists="replace", index=False)
+
+    submenu_df = pd.read_json(json.dumps(submenus_data))
+    submenu_df.to_sql("submenus", engine, if_exists="replace", index=False)
+
+    menu_df = pd.read_json(json.dumps(menus_data))
+    menu_df.to_sql("menus", engine, if_exists="replace", index=False)
+
+
 @celery_app.task
 def pandas_update_database() -> None:
-    new_hash = calculate_file_hash()
-    if not Path.exists(Path("./app/admin/hash")):
-        write_hash("22222")
-    old_hash = read_hash()
-
-    print("###" * 30)
-    print(old_hash)
-    print("###" * 30)
-    print(new_hash)
-    print("###" * 30)
-    print(Path("./app/admin/hash"))
-    print(Path("./app/admin/Menu.xlsx"))
-    print("###" * 30)
-
-    if old_hash != new_hash:
-        menus_data, submenus_data, dishes_data = excel_to_json()
-        dish_df = pd.read_json(json.dumps(dishes_data))
-        dish_df.to_sql("dishes", engine, if_exists="replace", index=False)
-
-        submenu_df = pd.read_json(json.dumps(submenus_data))
-        submenu_df.to_sql("submenus", engine, if_exists="replace", index=False)
-
-        menu_df = pd.read_json(json.dumps(menus_data))
-        menu_df.to_sql("menus", engine, if_exists="replace", index=False)
-
-        write_hash(new_hash)
+    if USE_GOOGLE:
+        creds = auth()
+        data = get_data(creds)
+        run_update_database(data)
     else:
-        print("DIFF NOT FOUND")
+        new_hash = calculate_file_hash()
+        if not Path.exists(Path("./app/admin/hash")):
+            write_hash("22222")
+        old_hash = read_hash()
+        wb = load_workbook(Path("./app/admin/Menu.xlsx"))
+        sheet = wb.active
+        data = sheet.iter_rows(values_only=True)
+        if old_hash != new_hash:
+            run_update_database(data)
+            write_hash(new_hash)
+        else:
+            print("DIFF NOT FOUND")

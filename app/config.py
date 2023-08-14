@@ -10,6 +10,7 @@ else:
     load_dotenv(".env.local")
 
 BASE_URL: str = str(os.getenv("BASE_URL"))
+USE_GOOGLE: bool = bool(os.getenv("USE_GOOGLE_SHEET"))
 
 DB_NAME: str = os.getenv("DB_NAME", default="postgres")
 DB_USER: str = os.getenv("DB_USER", default="postgres")

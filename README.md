@@ -7,6 +7,17 @@
 ![](https://img.shields.io/badge/aioredis-2.0.1-red?style=flat-square)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
+### Пометки для проверяющих:
+из задания не понятен формат ответа:
+`3.Добавить эндпоинт (GET) для вывода всех меню со всеми связанными подменю и со всеми связанными блюдами.`
+поэтому сделал 2 endpoints
+http://localhost:8000/api/v1/full_menu_with_id - полная информация с ID и счетчиками
+http://localhost:8000/api/v1/full_menu_without_id - "чистая" информация
+
+Так же есть 2 debug endpoints на ручную загрузку из Menu.xlsx и на выгрузку из базы в Database.xlsx
+
+
+
 ## Installation:
 ```commandline
 git clone https://github.com/suntrackspb/fastapi-menu.git
