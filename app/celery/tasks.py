@@ -4,13 +4,14 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Any
 
+import gspread
 import pandas as pd
 from celery import Celery
 from openpyxl import load_workbook
-from sqlalchemy import create_engine
+from sqlalchemy import Integer, String, create_engine
+from sqlalchemy.dialects.postgresql import UUID
 
 from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, USE_GOOGLE
-from app.google_sheets.google_sheet import auth, get_data
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
@@ -50,7 +51,6 @@ def write_hash(hash_summ: str) -> None:
 
 
 def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[str, dict[Any, Any]], dict[str, dict[Any, Any]]]:
-
     menu_json: dict[str, dict] = {"id": {}, "title": {}, "description": {}}
     submenu_json: dict[str, dict] = {"id": {}, "menu_id": {}, "title": {}, "description": {}}
     dish_json: dict[str, dict] = {"id": {}, "submenu_id": {},
@@ -96,26 +96,50 @@ def run_update_database(data: list) -> None:
     print("===" * 30)
 
     menus_data, submenus_data, dishes_data = excel_to_json(data)
+
     dish_df = pd.read_json(json.dumps(dishes_data))
-    dish_df.to_sql("dishes", engine, if_exists="replace", index=False)
+    dish_df.to_sql("dishes", engine, if_exists="replace", index=False,
+                   dtype={'id': UUID(as_uuid=True),
+                          'submenu_id': UUID(as_uuid=True),
+                          'title': String,
+                          'description': String,
+                          'price': String,
+                          'discount': Integer,
+                          }
+                   )
 
     submenu_df = pd.read_json(json.dumps(submenus_data))
-    submenu_df.to_sql("submenus", engine, if_exists="replace", index=False)
+    submenu_df.to_sql("submenus", engine, if_exists="replace", index=False,
+                      dtype={'id': UUID(as_uuid=True),
+                             'menu_id': UUID(as_uuid=True),
+                             'title': String,
+                             'description': String,
+                             }
+                      )
 
     menu_df = pd.read_json(json.dumps(menus_data))
-    menu_df.to_sql("menus", engine, if_exists="replace", index=False)
+    menu_df.to_sql("menus", engine, if_exists="replace", index=False,
+                   dtype={'id': UUID(as_uuid=True),
+                          'title': String,
+                          'description': String,
+                          }
+                   )
 
 
 @celery_app.task
 def pandas_update_database() -> None:
     bool_value = (USE_GOOGLE == "True")
     if bool_value:
-        creds = auth()
-        data = get_data(creds)
+        # creds = auth()
+        # data = get_data(creds)
         print("===" * 15)
         print("USE GOOGLE")
         print("===" * 15)
-        run_update_database(data)
+        gc = gspread.service_account(filename='./western-augury-395817-437fdee48519.json')
+        sh = gc.open_by_key('19dvWw-H0Tr6KD0gCUmMJlLtqxuoGlPllA-8GA_GgDj0')
+        worksheet = sh.get_worksheet(0)
+        list_of_lists = worksheet.get_all_values()
+        run_update_database(list_of_lists)
     else:
         if Path(admin_file).exists():
             new_hash = calculate_file_hash()
