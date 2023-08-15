@@ -9,7 +9,7 @@ class DishBase(BaseModel):
     price: str
     discount: int = Field(exclude=True)
 
-    @computed_field(alias='price')  # type: ignore[misc]
+    @computed_field(alias="price")  # type: ignore[misc]
     @property
     def computed_price(self) -> str:
         comp = float(self.price.replace(",", ".").replace("\xa0", "")) * (100 - self.discount) / 100

@@ -9,9 +9,9 @@ elif os.getenv("MODE") == "PROD":
 else:
     load_dotenv(".env.local")
 
-BASE_URL: str = str(os.getenv("BASE_URL"))
-USE_GOOGLE: str = str(os.getenv("USE_GOOGLE_SHEET"))
-GOOGLE_REDIRECT_PORT: str = str(os.getenv("GOOGLE_REDIRECT_PORT", default="55423"))
+BASE_URL: str | None = os.getenv("BASE_URL")
+USE_GOOGLE: str | None = os.getenv("USE_GOOGLE_SHEET")
+SHEET_UID: str | None = os.getenv("GOOGLE_SHEETS_ID")
 
 DB_NAME: str = os.getenv("DB_NAME", default="postgres")
 DB_USER: str = os.getenv("DB_USER", default="postgres")

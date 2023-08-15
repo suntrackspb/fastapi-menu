@@ -11,7 +11,15 @@ from openpyxl import load_workbook
 from sqlalchemy import Integer, String, create_engine
 from sqlalchemy.dialects.postgresql import UUID
 
-from app.config import DB_HOST, DB_NAME, DB_PASS, DB_PORT, DB_USER, USE_GOOGLE
+from app.config import (
+    DB_HOST,
+    DB_NAME,
+    DB_PASS,
+    DB_PORT,
+    DB_USER,
+    SHEET_UID,
+    USE_GOOGLE,
+)
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
@@ -91,38 +99,33 @@ def excel_to_json(array: list[list]) -> tuple[dict[str, dict[Any, Any]], dict[st
 
 
 def run_update_database(data: list) -> None:
-    print("===" * 30)
-    print("RUN UPDATE DATABASE")
-    print("===" * 30)
-
     menus_data, submenus_data, dishes_data = excel_to_json(data)
-
     dish_df = pd.read_json(json.dumps(dishes_data))
     dish_df.to_sql("dishes", engine, if_exists="replace", index=False,
-                   dtype={'id': UUID(as_uuid=True),
-                          'submenu_id': UUID(as_uuid=True),
-                          'title': String,
-                          'description': String,
-                          'price': String,
-                          'discount': Integer,
-                          }
+                   dtype={"id": UUID(as_uuid=True),
+                          "submenu_id": UUID(as_uuid=True),
+                          "title": String,
+                          "description": String,
+                          "price": String,
+                          "discount": Integer,
+                          },
                    )
 
     submenu_df = pd.read_json(json.dumps(submenus_data))
     submenu_df.to_sql("submenus", engine, if_exists="replace", index=False,
-                      dtype={'id': UUID(as_uuid=True),
-                             'menu_id': UUID(as_uuid=True),
-                             'title': String,
-                             'description': String,
-                             }
+                      dtype={"id": UUID(as_uuid=True),
+                             "menu_id": UUID(as_uuid=True),
+                             "title": String,
+                             "description": String,
+                             },
                       )
 
     menu_df = pd.read_json(json.dumps(menus_data))
     menu_df.to_sql("menus", engine, if_exists="replace", index=False,
-                   dtype={'id': UUID(as_uuid=True),
-                          'title': String,
-                          'description': String,
-                          }
+                   dtype={"id": UUID(as_uuid=True),
+                          "title": String,
+                          "description": String,
+                          },
                    )
 
 
@@ -130,13 +133,8 @@ def run_update_database(data: list) -> None:
 def pandas_update_database() -> None:
     bool_value = (USE_GOOGLE == "True")
     if bool_value:
-        # creds = auth()
-        # data = get_data(creds)
-        print("===" * 15)
-        print("USE GOOGLE")
-        print("===" * 15)
-        gc = gspread.service_account(filename='./western-augury-395817-437fdee48519.json')
-        sh = gc.open_by_key('19dvWw-H0Tr6KD0gCUmMJlLtqxuoGlPllA-8GA_GgDj0')
+        gc = gspread.service_account(filename="./credentials.json")
+        sh = gc.open_by_key(SHEET_UID)
         worksheet = sh.get_worksheet(0)
         list_of_lists = worksheet.get_all_values()
         run_update_database(list_of_lists)
@@ -150,12 +148,5 @@ def pandas_update_database() -> None:
             sheet = wb.active
             data = sheet.iter_rows(values_only=True)
             if old_hash != new_hash:
-                print("===" * 15)
-                print("USE LOCAL")
-                print("===" * 15)
                 run_update_database(data)
                 write_hash(new_hash)
-            else:
-                print("===" * 15)
-                print("DIFF NOT FOUND")
-                print("===" * 15)
