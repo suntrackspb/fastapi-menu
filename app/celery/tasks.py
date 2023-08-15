@@ -134,10 +134,16 @@ def pandas_update_database() -> None:
     bool_value = (USE_GOOGLE == "True")
     if bool_value:
         gc = gspread.service_account(filename="./credentials.json")
-        sh = gc.open_by_key(SHEET_UID)
-        worksheet = sh.get_worksheet(0)
-        list_of_lists = worksheet.get_all_values()
-        run_update_database(list_of_lists)
+        last_update = gc.open_by_key(SHEET_UID).lastUpdateTime
+        if not Path.exists(hash_file):
+            write_hash("22222")
+        old_time = read_hash()
+        if last_update != old_time:
+            sh = gc.open_by_key(SHEET_UID)
+            worksheet = sh.get_worksheet(0)
+            list_of_lists = worksheet.get_all_values()
+            run_update_database(list_of_lists)
+            write_hash(last_update)
     else:
         if Path(admin_file).exists():
             new_hash = calculate_file_hash()
