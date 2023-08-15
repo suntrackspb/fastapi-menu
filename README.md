@@ -1,11 +1,15 @@
 ## Homework in course from YLab
+![](https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white)
+![](https://img.shields.io/badge/FastAPI-009688.svg?style=for-the-badge&logo=FastAPI&logoColor=white)
+![](https://img.shields.io/badge/PostgreSQL-4169E1.svg?style=for-the-badge&logo=PostgreSQL&logoColor=white)
+![](https://img.shields.io/badge/Redis-DC382D.svg?style=for-the-badge&logo=Redis&logoColor=white)
+![](https://img.shields.io/badge/Celery-37814A.svg?style=for-the-badge&logo=Celery&logoColor=white)
+![](https://img.shields.io/badge/RabbitMQ-FF6600.svg?style=for-the-badge&logo=RabbitMQ&logoColor=white)
+![](https://img.shields.io/badge/Google%20Sheets-34A853.svg?style=for-the-badge&logo=Google-Sheets&logoColor=white)
+![](https://img.shields.io/badge/Pytest-0A9EDC.svg?style=for-the-badge&logo=Pytest&logoColor=white)
+![](https://img.shields.io/badge/precommit-FAB040.svg?style=for-the-badge&logo=pre-commit&logoColor=black)
+![](https://img.shields.io/badge/Docker-2496ED.svg?style=for-the-badge&logo=Docker&logoColor=white)
 
-![](https://img.shields.io/badge/python-3.10-blue?style=flat-square)
-![](https://img.shields.io/badge/fastapi-0.100.0-red?style=flat-square)
-![](https://img.shields.io/badge/SQLAlchemy-1.4.39-red?style=flat-square)
-![](https://img.shields.io/badge/asyncpg-0.28.0-red?style=flat-square)
-![](https://img.shields.io/badge/aioredis-2.0.1-red?style=flat-square)
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 ### Пометки для проверяющих:
 Переключение между Menu.xlsx и Google Sheets в .env `USE_GOOGLE_SHEET=False`
