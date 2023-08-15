@@ -13,7 +13,7 @@ class DishBase(BaseModel):
     @property
     def computed_price(self) -> str:
         comp = float(self.price.replace(",", ".").replace("\xa0", "")) * (100 - self.discount) / 100
-        return str(comp)
+        return str(round(comp, 2))
 
 
 class DishCreate(BaseModel):
