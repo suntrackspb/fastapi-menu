@@ -2,7 +2,6 @@ from fastapi import FastAPI
 
 from app.db.database import db_init
 from app.db.redis import cache_init
-from app.google_sheets.router import router as google_router
 from app.routes.data import router as datas_router
 from app.routes.debug import router as debug_router
 from app.routes.dish import router as dish_router
@@ -20,15 +19,9 @@ async def on_startup() -> None:
     await cache_init()
 
 app.include_router(
-    google_router,
-    prefix="/api/v1",
-    tags=["Google"],
-)
-
-app.include_router(
     datas_router,
     prefix="/api/v1",
-    tags=["Datas"],
+    tags=["datas"],
 )
 
 app.include_router(
@@ -52,5 +45,5 @@ app.include_router(
 app.include_router(
     debug_router,
     prefix="/api/v1",
-    tags=["Debug"],
+    tags=["debug"],
 )

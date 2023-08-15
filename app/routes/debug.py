@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends
 
 from app.celery.tasks import pandas_update_database
 from app.depend import get_data_service
-from app.google_sheets.google_sheet import auth, get_data
 from app.schemas.data import MessageStatus
 from app.services.data_service import DataService
 
@@ -46,14 +45,3 @@ async def unload_from_database(
 async def manual_celery_task():
     """celery task"""
     return pandas_update_database()
-
-
-@router.get(
-    "/google_test",
-    summary="Запрос данных от Google Api",
-    response_description="Запрос данных от Google Api",
-)
-async def read_data():
-    """Запросить разрешения googleAPi"""
-    creds = auth()
-    return get_data(creds)

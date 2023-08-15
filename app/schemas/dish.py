@@ -12,7 +12,8 @@ class DishBase(BaseModel):
     @computed_field(alias='price')  # type: ignore[misc]
     @property
     def computed_price(self) -> str:
-        return str(float(self.price) * (100 - self.discount) / 100)
+        comp = float(self.price.replace(",", ".").replace("\xa0", "")) * (100 - self.discount) / 100
+        return str(comp)
 
 
 class DishCreate(BaseModel):

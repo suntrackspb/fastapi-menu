@@ -69,6 +69,5 @@ virtualenv==20.24.2
 wcwidth==0.2.6
 xlrd==2.0.1
 zipp==3.16.2
-google-api-python-client==2.96.0
-google-auth-httplib2==0.1.0
-google-auth-oauthlib==1.0.0
+
+gspread~=5.10.0
