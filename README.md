@@ -8,18 +8,15 @@
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 
 ### Пометки для проверяющих:
-из задания не понятен формат ответа:
-`3.Добавить эндпоинт (GET) для вывода всех меню со всеми связанными подменю и со всеми связанными блюдами.`
-поэтому сделал 2 endpoints (разными запросами)
 
-http://localhost:8000/api/v1/full_menu_with_id - полная информация с ID и счетчиками
-
-http://localhost:8000/api/v1/full_menu_without_id - "чистая" информация
-
-Так же есть 2 debug endpoints на ручную загрузку из Menu.xlsx и на выгрузку из базы в Database.xlsx
+Есть 2 debug endpoints на ручную загрузку из Menu.xlsx и на выгрузку из базы в Database.xlsx
+(для реализации обратной синхронизации)
 
 Переключение между Local xlsx и Google Sheets в .env `USE_GOOGLE_SHEET=False`
 GoogleApi требует credentials.json, но я не совсем понял как обновлять токен, так как он временный / папка google_sheet
+
+https://docs.google.com/spreadsheets/d/19dvWw-H0Tr6KD0gCUmMJlLtqxuoGlPllA-8GA_GgDj0/edit?usp=sharing
+
 Подсчёт процентов скидки из столбца G / Реализовано через computed_field в /app/schemas/data.py, dish.py
 
 
@@ -72,11 +69,8 @@ docker run -itd \
 	postgres
 ```
 or use your PostgreSQL Server, but you need change auth data in .env file
-
-and edit hosts, set:
-```text
-DB_HOST=localhost
-REDIS_HOST=localhost
+```shell
+docker run --name some-redis -d redis
 ```
 ```shell
 #Linux:
