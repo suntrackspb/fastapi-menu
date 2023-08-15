@@ -24,15 +24,6 @@ class DataService:
             await self.cache.set_all("full_menu_ids", db_full_ids)
         return db_full_ids
 
-    async def get_full_without_id(self) -> list[dict[Any, Any]] | None:
-        cached_data = await self.cache.get("full_menu")
-        if cached_data:
-            db_full = cached_data
-        else:
-            db_full = await self.crud.get_list_without_id()
-            await self.cache.add("full_menu", db_full)
-        return db_full
-
     # DEBUG FUNCTIONS
 
     @staticmethod
