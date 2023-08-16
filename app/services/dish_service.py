@@ -48,7 +48,6 @@ class DishService:
         background_tasks.add_task(self.cache.delete, "menu_list")
         background_tasks.add_task(self.cache.delete, "submenu_list")
         background_tasks.add_task(self.cache.delete, "dish_list")
-        background_tasks.add_task(self.cache.delete, "full_menu")
         background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return await self.crud.create(
             dish=dish,
@@ -70,7 +69,6 @@ class DishService:
         )
         await self.cache.set(f"dish_{dish_id}", updated_dish)
         background_tasks.add_task(self.cache.delete, "dish_list")
-        background_tasks.add_task(self.cache.delete, "full_menu")
         background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return updated_dish
 
@@ -91,6 +89,5 @@ class DishService:
         background_tasks.add_task(self.cache.delete, "menu_list")
         background_tasks.add_task(self.cache.delete, "submenu_list")
         background_tasks.add_task(self.cache.delete, "dish_list")
-        background_tasks.add_task(self.cache.delete, "full_menu")
         background_tasks.add_task(self.cache.delete, "full_menu_ids")
         return {"status": "true", "message": "The menu has been deleted"}
