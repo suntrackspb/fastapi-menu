@@ -14,7 +14,7 @@ class DishComputed(BaseModel):
     @property
     def computed_price(self) -> str:
         comp = float(self.price.replace(",", ".").replace("\xa0", "")) * (100 - self.discount) / 100
-        return str(round(comp, 2))
+        return f"{comp:.2f}"
 
 
 class SubmenuSchema(BaseModel):
