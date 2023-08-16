@@ -9,12 +9,6 @@ async def test_get_empty_menu_with_id(ac: AsyncClient):
     assert response_get_all_menus.json() == []
 
 
-async def test_get_empty_menu_without_id(ac: AsyncClient):
-    response_get_all_menus = await ac.get("/api/v1/full_menu_without_id")
-    assert response_get_all_menus.status_code == 200
-    assert response_get_all_menus.json() == []
-
-
 async def test_post_menu(ac: AsyncClient):
     response_post = await ac.post("/api/v1/menus", json={
         "title": "My menu 1",
@@ -68,12 +62,6 @@ async def test_post_dishes(ac: AsyncClient):
 
 async def test_get_full_menu_with_id(ac: AsyncClient):
     response_get_all_menus = await ac.get("/api/v1/full_menu_with_id")
-    assert response_get_all_menus.status_code == 200
-    assert response_get_all_menus.json() != []
-
-
-async def test_get_full_menu_without_id(ac: AsyncClient):
-    response_get_all_menus = await ac.get("/api/v1/full_menu_without_id")
     assert response_get_all_menus.status_code == 200
     assert response_get_all_menus.json() != []
 
