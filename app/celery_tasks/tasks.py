@@ -31,7 +31,7 @@ celery_app.conf.broker_connection_retry_on_startup = True
 
 celery_app.conf.beat_schedule = {
     "pandas_update_database": {
-        "task": "app.celery.tasks.pandas_update_database",
+        "task": "app.celery_tasks.tasks.pandas_update_database",
         "schedule": timedelta(seconds=15),
     },
 }
