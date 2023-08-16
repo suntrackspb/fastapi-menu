@@ -6,11 +6,11 @@ services:
     env_file:
       - .env.tests
     ports:
-      - "6543:5432"
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-U", "${DB_USER_TEST}", "-d", "${DB_NAME_TEST}" ]
+      test: [ "CMD-SHELL", "pg_isready", "-U", "${DB_USER}", "-d", "${DB_NAME}" ]
       interval: 5s
       timeout: 30s
       retries: 3
@@ -39,7 +39,7 @@ services:
     env_file:
       - .env.tests
     ports:
-      - "7379:7379"
+      - "6379:6379"
     networks:
       - fastapi_test_network
     healthcheck:

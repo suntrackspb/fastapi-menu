@@ -60,7 +60,7 @@ docker start -a fastapi_test_app
 ```
 ```shell
 #Stop & delete
-docker-compose down --rmi all --remove-orphans
+docker-compose -f docker-compose-test.yaml down --rmi all --remove-orphans
 ```
 
 ## Run on local:
