@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
-from app.celery.tasks import pandas_update_database
+from app.celery_tasks.tasks import pandas_update_database
 from app.depend import get_data_service
 from app.schemas.data import MessageStatus
 from app.services.data_service import DataService

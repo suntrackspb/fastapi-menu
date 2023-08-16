@@ -86,7 +86,7 @@ services:
       - .env
     volumes:
       - ./:/app
-    command: celery -A app.celery.tasks worker --loglevel=DEBUG
+    command: celery -A app.celery_tasks.tasks worker --loglevel=DEBUG
     networks:
       - fastapi_project_network
     depends_on:
@@ -104,7 +104,7 @@ services:
       - .env
     volumes:
       - ./:/app
-    command: celery -A app.celery.tasks beat --loglevel=DEBUG
+    command: celery -A app.celery_tasks.tasks beat --loglevel=DEBUG
     networks:
       - fastapi_project_network
     depends_on:
