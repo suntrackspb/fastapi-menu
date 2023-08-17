@@ -44,7 +44,7 @@ cd fastapi-menu
 ## Run on Docker:
 ```shell
 #Start
-docker-compose up -d
+docker-compose up -d --build
 ```
 Open http://localhost:8000/docs/
 ```shell
@@ -54,7 +54,7 @@ docker-compose down --rmi all --remove-orphans
 
 ## Run Tests on Docker:
 ```shell
-docker-compose -f docker-compose-test.yaml up -d
+docker-compose -f docker-compose-test.yaml up -d --build
 
 docker start -a fastapi_test_app
 ```
