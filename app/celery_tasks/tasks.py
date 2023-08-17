@@ -36,12 +36,12 @@ celery_app.conf.beat_schedule = {
     },
 }
 
-admin_file = Path("./app/admin/Menu.xlsx")
-hash_file = Path("./app/admin/hash")
+ADMIN_FILE = Path("./app/admin/Menu.xlsx")
+HASH_FILE = Path("./app/admin/hash")
 
 
 def calculate_file_hash() -> str:
-    with Path("./app/admin/Menu.xlsx").open("rb") as f:
+    with ADMIN_FILE.open("rb") as f:
         hasher = hashlib.sha256()
         while chunk := f.read(65536):
             hasher.update(chunk)
@@ -49,12 +49,12 @@ def calculate_file_hash() -> str:
 
 
 def read_hash() -> str:
-    with Path("./app/admin/hash").open("r") as f:
+    with HASH_FILE.open("r") as f:
         return f.read()
 
 
 def write_hash(hash_summ: str) -> None:
-    with Path("./app/admin/hash").open("w") as f:
+    with HASH_FILE.open("w") as f:
         f.write(hash_summ)
 
 
@@ -135,8 +135,8 @@ def pandas_update_database() -> None:
     if bool_value:
         gc = gspread.service_account(filename="./credentials.json")
         last_update = gc.open_by_key(SHEET_UID).lastUpdateTime
-        if not Path.exists(hash_file):
-            write_hash("22222")
+        if not Path.exists(HASH_FILE):
+            write_hash("default")
         old_time = read_hash()
         if last_update != old_time:
             sh = gc.open_by_key(SHEET_UID)
@@ -145,12 +145,12 @@ def pandas_update_database() -> None:
             run_update_database(list_of_lists)
             write_hash(last_update)
     else:
-        if Path(admin_file).exists():
+        if Path(ADMIN_FILE).exists():
             new_hash = calculate_file_hash()
-            if not Path.exists(hash_file):
-                write_hash("22222")
+            if not Path.exists(HASH_FILE):
+                write_hash("default")
             old_hash = read_hash()
-            wb = load_workbook(admin_file)
+            wb = load_workbook(ADMIN_FILE)
             sheet = wb.active
             data = sheet.iter_rows(values_only=True)
             if old_hash != new_hash:
