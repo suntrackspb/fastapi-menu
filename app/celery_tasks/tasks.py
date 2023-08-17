@@ -1,3 +1,4 @@
+import asyncio
 import hashlib
 import json
 from datetime import timedelta
@@ -20,6 +21,7 @@ from app.config import (
     SHEET_UID,
     USE_GOOGLE,
 )
+from app.db.redis import cache_init
 
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}")
 
@@ -156,3 +158,9 @@ def pandas_update_database() -> None:
             if old_hash != new_hash:
                 run_update_database(data)
                 write_hash(new_hash)
+                loop = asyncio.get_event_loop()
+                if not loop.is_running():
+                    loop.run_until_complete(cache_init())
+                    loop.close()
+                else:
+                    asyncio.create_task(cache_init())
