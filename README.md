@@ -17,19 +17,12 @@
 
 
 
-### Пометки для проверяющих:
-Переключение между Menu.xlsx и Google Sheets в .env `USE_GOOGLE_SHEET=False`
-GoogleApi требует credentials.json в корне проекта, прикреплён к комментарию на платформе
-реализовано: /app/celery/tasks.py
-
-https://docs.google.com/spreadsheets/d/19dvWw-H0Tr6KD0gCUmMJlLtqxuoGlPllA-8GA_GgDj0/edit?usp=sharing
+## Project description
+RESTful API для управления меню, имеет таблицы: Меню, подменю, блюдо.
+CRUD операции для всех таблиц, кэширование ответов, импорт и экспорт данных в формате xlsx, (также Google Sheet)
 
 Подсчёт процентов скидки из столбца G / Реализовано через computed_field в /app/schemas/data.py, /app/schemas/dish.py
 
-Есть 2 debug endpoints на ручную загрузку из Menu.xlsx и на выгрузку из базы в Database.xlsx
-(для реализации обратной синхронизации, не уверен, что успею придумать логику обратного обновления)
-
-Обновление из Menu.xlsx блокируется подсчётом хэш суммы файла, файл hash появляется в папке /app/admin
 
 
 ## Installation:
